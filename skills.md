@@ -1,16 +1,16 @@
-﻿# skills.md
+# skills.md
 
 ## 目的
-このフォルダのSkillsは、繰り返し使う作業手順や判断基準を小さく整理して再利用するためのものです。
+このリポジトリで使えるSkillの一覧を示す。
 
-## 運用方針
-- 1ファイル=1テーマで焦点を絞る
-- 具体例や参照先がある場合は明記する
-- 変更があれば随時更新する
+## 一覧
+- api-design: REST API設計の支援スキル。リソース設計からレビューまで。（`.cursor/skills/api-design/SKILL.md`）
+- mock-to-api-design: 画面モックからAPI設計を行うワークフロー。フロント主導でOpenAPI化する。（`.cursor/skills/mock-to-api-design/SKILL.md`）
+- react: React開発の基本原則と最小チェックリスト。（`.cursor/skills/react/SKILL.md`）
+- tdd: t-wada流TDDの最小ワークフロー。（`.cursor/skills/tdd/SKILL.md`）
+- git: Gitワークフローの運用指針。（`.cursor/skills/git/SKILL.md`）
+- commands: カスタムコマンド運用手順。（`.cursor/skills/commands/SKILL.md`）
+- codebase: コードベース理解のための質問例と検索指針。（`.cursor/skills/codebase/SKILL.md`）
 
-## 使い方（例）
-- 作業に合うSkillを選び、必要な部分だけを読む
-- 複数Skillが必要なら最小限を組み合わせる
-
-## 参照先
-- API設計: `.cursor/skills/api-design/`
+## 更新
+- 追加/変更があればこの一覧も更新する

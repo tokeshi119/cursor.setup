@@ -38,7 +38,7 @@
 ### ユーザー操作
 - 検索: 項目X, Yで検索可能
 - ソート: 項目Zでソート可能
-- ページネーション: あり（デフォルト20件）
+- ページネーション: あり（デフォルト100件）
 ...
 
 ### 関連画面
@@ -155,7 +155,7 @@ page:
 size:
   type: integer
   required: false
-  default: 20
+  default: 100
   minimum: 1
   maximum: 100
   description: 1ページあたりの件数
@@ -225,8 +225,8 @@ size:
   "pagination": {
     "total": 150,
     "page": 1,
-    "size": 20,
-    "totalPages": 8
+    "size": 100,
+    "totalPages": 2
   }
 }
 
@@ -340,13 +340,65 @@ components:
       scheme: bearer
 
   schemas:
-    # 共通スキーマ定義
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: 総件数
+        page:
+          type: integer
+          description: 現在のページ番号
+        size:
+          type: integer
+          description: 1ページあたりの件数
+        totalPages:
+          type: integer
+          description: 総ページ数
 
 security:
   - bearerAuth: []
 
 paths:
-  # 各エンドポイント定義
+  /line-friends:
+    get:
+      summary: 友だち一覧取得
+      description: LINE友だちの一覧を取得する
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: 友だちの表示名で部分一致検索
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: ページ番号
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 100
+          description: 1ページあたりの件数
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LineFriend'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
 ```
 
 **6-2. 各エンドポイントの詳細記述**
