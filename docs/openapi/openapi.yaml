@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: LINE Connector 2 API
+  version: 0.1.0
+  description: MVP向けのドラフトOpenAPI。規約は docs/api/conventions.md を参照。
+  x-updated: 2026-02-02
+
+servers:
+  - url: https://li-connector2.com/api/v1
+    description: 本番（仮）
+
+paths:
+  /stats/usage:
+    get:
+      summary: 利用集計（月別/日別/時間別）
+      description: 課金算定向けに、新規友だち追加数とLINEメッセージ数（push/reply）を集計して返す。
+      parameters:
+        - name: granularity
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [month, day, hour]
+          description: 集計粒度。
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 2000
+          description: granularity=month のとき必須。
+          example: 2026
+        - name: month
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}$'
+          description: granularity=day のとき必須（YYYY-MM）。
+          example: "2026-01"
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: granularity=hour のとき必須（YYYY-MM-DD）。
+          example: "2026-01-01"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageStatsResponse'
+              examples:
+                month:
+                  summary: 月別の例（2026年）
+                  value:
+                    granularity: month
+                    time_zone: Asia/Tokyo
+                    range:
+                      from: "2026-01-01"
+                      to: "2026-12-31"
+                    summary:
+                      friend_registrations: 120
+                      push_deliveries: 300
+                      reply_deliveries: 50
+                      total_deliveries: 350
+                    items:
+                      - period_start: "2026-01-01"
+                        label: "2026-01"
+                        friend_registrations: 10
+                        push_deliveries: 25
+                        reply_deliveries: 5
+                        total_deliveries: 30
+                      - period_start: "2026-02-01"
+                        label: "2026-02"
+                        friend_registrations: 0
+                        push_deliveries: 0
+                        reply_deliveries: 0
+                        total_deliveries: 0
+                day:
+                  summary: 日別の例（2026年1月）
+                  value:
+                    granularity: day
+                    time_zone: Asia/Tokyo
+                    range:
+                      from: "2026-01-01"
+                      to: "2026-01-31"
+                    summary:
+                      friend_registrations: 40
+                      push_deliveries: 90
+                      reply_deliveries: 10
+                      total_deliveries: 100
+                    items:
+                      - period_start: "2026-01-01"
+                        label: "2026-01-01"
+                        friend_registrations: 2
+                        push_deliveries: 5
+                        reply_deliveries: 1
+                        total_deliveries: 6
+                      - period_start: "2026-01-02"
+                        label: "2026-01-02"
+                        friend_registrations: 0
+                        push_deliveries: 0
+                        reply_deliveries: 0
+                        total_deliveries: 0
+                hour:
+                  summary: 時間別の例（2026-01-01）
+                  value:
+                    granularity: hour
+                    time_zone: Asia/Tokyo
+                    range:
+                      from: "2026-01-01"
+                      to: "2026-01-01"
+                    summary:
+                      friend_registrations: 3
+                      push_deliveries: 12
+                      reply_deliveries: 2
+                      total_deliveries: 14
+                    items:
+                      - period_start: "2026-01-01"
+                        label: "00"
+                        friend_registrations: 1
+                        push_deliveries: 4
+                        reply_deliveries: 1
+                        total_deliveries: 5
+                      - period_start: "2026-01-01"
+                        label: "01"
+                        friend_registrations: 0
+                        push_deliveries: 0
+                        reply_deliveries: 0
+                        total_deliveries: 0
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_params:
+                  summary: パラメータ不正の例
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: リクエストパラメータが不正です。
+                      details:
+                        - field: month
+                          issue: 形式不正
+                      trace_id: "00000000-0000-0000-0000-000000000000"
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UsageStatsResponse:
+      type: object
+      required:
+        - granularity
+        - time_zone
+        - range
+        - summary
+        - items
+      properties:
+        granularity:
+          type: string
+          enum: [month, day, hour]
+        time_zone:
+          type: string
+          example: Asia/Tokyo
+        range:
+          type: object
+          required: [from, to]
+          properties:
+            from:
+              type: string
+              format: date
+            to:
+              type: string
+              format: date
+        summary:
+          $ref: '#/components/schemas/UsageStatsSummary'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageStatsItem'
+
+    UsageStatsSummary:
+      type: object
+      required:
+        - friend_registrations
+        - push_deliveries
+        - reply_deliveries
+        - total_deliveries
+      properties:
+        friend_registrations:
+          type: integer
+          format: int64
+          example: 120
+        push_deliveries:
+          type: integer
+          format: int64
+          example: 300
+        reply_deliveries:
+          type: integer
+          format: int64
+          example: 50
+        total_deliveries:
+          type: integer
+          format: int64
+          example: 350
+
+    UsageStatsItem:
+      type: object
+      required:
+        - period_start
+        - label
+        - friend_registrations
+        - push_deliveries
+        - reply_deliveries
+        - total_deliveries
+      properties:
+        period_start:
+          type: string
+          format: date
+          example: "2026-01-01"
+        label:
+          type: string
+          example: "2026-01"
+        friend_registrations:
+          type: integer
+          format: int64
+          example: 10
+        push_deliveries:
+          type: integer
+          format: int64
+          example: 25
+        reply_deliveries:
+          type: integer
+          format: int64
+          example: 5
+        total_deliveries:
+          type: integer
+          format: int64
+          example: 30
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          example: リクエストパラメータが不正です。
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+        trace_id:
+          type: string
+          format: uuid
+
+    ErrorDetail:
+      type: object
+      required: [field, issue]
+      properties:
+        field:
+          type: string
+          example: month
+        issue:
+          type: string
+          example: 形式不正
