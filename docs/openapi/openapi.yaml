@@ -5,6 +5,28 @@ info:
   description: MVP向けのドラフトOpenAPI。規約は docs/api/conventions.md を参照。
   x-updated: 2026-02-02
 
+tags:
+  - name: Stats
+    description: 利用集計
+  - name: Friends
+    description: 友だち管理
+  - name: LineOfficialAccounts
+    description: LINE公式アカウント（参照用）
+  - name: LineAccounts
+    description: LINE設定管理
+  - name: Messages
+    description: メッセージ設定（挨拶/リッチメニュー/自動応答）
+  - name: DeliveryHistory
+    description: 配信履歴
+  - name: AdvertisementCodes
+    description: 広告コード管理
+  - name: PostbackHistory
+    description: ポストバック履歴
+  - name: Admins
+    description: 管理者管理
+  - name: SystemSettings
+    description: システム設定
+
 servers:
   - url: https://li-connector2.com/api/v1
     description: 本番（仮）
@@ -12,6 +34,9 @@ servers:
 paths:
   /stats/usage:
     get:
+      tags:
+        - Stats
+      operationId: getUsageStats
       summary: 利用集計（月別/日別/時間別）
       description: 課金算定向けに、新規友だち追加数とLINEメッセージ数（push/reply）を集計して返す。
       parameters:
@@ -172,6 +197,9 @@ paths:
         - bearerAuth: []
   /friends:
     get:
+      tags:
+        - Friends
+      operationId: listFriends
       summary: 友だち一覧/検索
       description: 友だち一覧を取得し、検索条件で絞り込む。
       parameters:
@@ -322,6 +350,9 @@ paths:
         - bearerAuth: []
   /friends/{friend_id}:
     delete:
+      tags:
+        - Friends
+      operationId: deleteFriend
       summary: 友だち削除（物理）
       description: 友だちを物理削除し、関連履歴も削除する。
       parameters:
@@ -363,6 +394,9 @@ paths:
         - bearerAuth: []
   /line-official-accounts:
     get:
+      tags:
+        - LineOfficialAccounts
+      operationId: listLineOfficialAccounts
       summary: LINE連携候補一覧
       description: 友だち検索のため、LINE連携の id / basic_id 一覧を取得する。
       responses:
@@ -394,6 +428,9 @@ paths:
         - bearerAuth: []
   /line-accounts:
     get:
+      tags:
+        - LineAccounts
+      operationId: listLineAccounts
       summary: LINE設定一覧/検索
       description: LINE設定を検索し、一覧で返す（検索条件の対象範囲は要相談。暫定は management_ids/usage_statuses/basic_id のみ）。
       parameters:
@@ -589,6 +626,9 @@ paths:
       security:
         - bearerAuth: []
     post:
+      tags:
+        - LineAccounts
+      operationId: createLineAccount
       summary: LINE設定作成（手動登録）
       description: LINE設定を新規作成する。
       requestBody:
@@ -632,6 +672,9 @@ paths:
         - bearerAuth: []
   /line-accounts/{line_account_id}:
     get:
+      tags:
+        - LineAccounts
+      operationId: getLineAccount
       summary: LINE設定詳細
       description: LINE設定の詳細を取得する。
       parameters:
@@ -676,6 +719,9 @@ paths:
       security:
         - bearerAuth: []
     put:
+      tags:
+        - LineAccounts
+      operationId: updateLineAccount
       summary: LINE設定更新
       description: LINE設定を更新する（全項目）。
       parameters:
@@ -732,6 +778,9 @@ paths:
       security:
         - bearerAuth: []
     delete:
+      tags:
+        - LineAccounts
+      operationId: deleteLineAccount
       summary: LINE設定削除（物理）
       description: LINE設定を物理削除する。
       parameters:
@@ -773,6 +822,9 @@ paths:
         - bearerAuth: []
   /line-accounts/{line_account_id}/linkage-check:
     post:
+      tags:
+        - LineAccounts
+      operationId: checkLineAccountLinkage
       summary: LINE連携チェック
       description: LINE設定の連携チェックを実行する。
       parameters:
@@ -818,6 +870,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/usage-status:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkUpdateUsageStatus
       summary: 使用状況の一括切替
       description: 指定したLINE設定の使用状況を一括で切り替える。
       requestBody:
@@ -861,6 +916,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/line-guidance:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkUpdateLineGuidance
       summary: 別LINE誘導の一括切替
       description: 指定したLINE設定の別LINE誘導を一括で切り替える。
       requestBody:
@@ -904,6 +962,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/distribution-target:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkUpdateDistributionTarget
       summary: 振り分け先の一括切替
       description: 指定したLINE設定の振り分け先を一括で切り替える。
       requestBody:
@@ -947,6 +1008,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/liveness-check:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkCheckLiveness
       summary: 生存チェック（複数）
       description: 指定したLINE設定の生存チェックを実行する。
       requestBody:
@@ -990,6 +1054,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/webhook-check:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkCheckWebhook
       summary: webhookチェック（複数）
       description: 指定したLINE設定のwebhookチェックを実行する。
       requestBody:
@@ -1033,6 +1100,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/webhook-refresh:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkRefreshWebhook
       summary: webhook更新（複数）
       description: 指定したLINE設定のwebhook更新を実行する。
       requestBody:
@@ -1076,6 +1146,9 @@ paths:
         - bearerAuth: []
   /line-accounts/bulk/access-token-refresh:
     post:
+      tags:
+        - LineAccounts
+      operationId: bulkRefreshAccessToken
       summary: アクセストークン更新（複数）
       description: 指定したLINE設定のアクセストークン更新を実行する。
       requestBody:
@@ -1119,6 +1192,9 @@ paths:
         - bearerAuth: []
   /line-accounts/csv-format:
     get:
+      tags:
+        - LineAccounts
+      operationId: getLineAccountsCsvFormat
       summary: CSVフォーマットダウンロード
       description: LINE設定CSVインポート用のフォーマットを取得する。
       responses:
@@ -1151,6 +1227,9 @@ paths:
         - bearerAuth: []
   /line-accounts/csv-import:
     post:
+      tags:
+        - LineAccounts
+      operationId: importLineAccountsCsv
       summary: CSVインポート登録
       description: CSVをアップロードしてLINE設定を一括登録する。
       requestBody:
@@ -1199,6 +1278,9 @@ paths:
         - bearerAuth: []
   /line-accounts/csv:
     get:
+      tags:
+        - LineAccounts
+      operationId: exportLineAccountsCsv
       summary: CSVダウンロード
       description: LINE設定一覧をCSVでダウンロードする。
       parameters:
@@ -1390,6 +1472,9 @@ paths:
         - bearerAuth: []
   /greeting-message:
     get:
+      tags:
+        - Messages
+      operationId: getGreetingMessage
       summary: 挨拶メッセージ取得
       description: 挨拶メッセージ（固定1種類）を取得する。
       responses:
@@ -1420,6 +1505,9 @@ paths:
       security:
         - bearerAuth: []
     put:
+      tags:
+        - Messages
+      operationId: updateGreetingMessage
       summary: 挨拶メッセージ更新
       description: 挨拶メッセージ（固定1種類）を更新する。テンプレートはボタン型のみ。
       requestBody:
@@ -1463,6 +1551,9 @@ paths:
         - bearerAuth: []
   /rich-menu:
     get:
+      tags:
+        - Messages
+      operationId: getRichMenu
       summary: リッチメニュー取得
       description: リッチメニュー（固定1種類）を取得する。
       responses:
@@ -1493,6 +1584,9 @@ paths:
       security:
         - bearerAuth: []
     put:
+      tags:
+        - Messages
+      operationId: updateRichMenu
       summary: リッチメニュー更新
       description: リッチメニュー（固定1種類）を更新する。
       requestBody:
@@ -1536,6 +1630,9 @@ paths:
         - bearerAuth: []
   /auto-response-message:
     get:
+      tags:
+        - Messages
+      operationId: getAutoResponseMessage
       summary: 自動応答メッセージ取得
       description: 自動応答メッセージ（固定1種類）を取得する。
       responses:
@@ -1566,6 +1663,9 @@ paths:
       security:
         - bearerAuth: []
     put:
+      tags:
+        - Messages
+      operationId: updateAutoResponseMessage
       summary: 自動応答メッセージ更新
       description: 自動応答メッセージ（固定1種類）を更新する。テンプレートはボタン型のみ、画像は使用しない。
       requestBody:
@@ -1609,6 +1709,9 @@ paths:
         - bearerAuth: []
   /delivery-history:
     get:
+      tags:
+        - DeliveryHistory
+      operationId: listDeliveryHistory
       summary: 配信履歴一覧/検索
       description: 配信履歴を一覧で返す。
       parameters:
@@ -1683,6 +1786,9 @@ paths:
         - bearerAuth: []
   /delivery-history/{delivery_history_id}:
     get:
+      tags:
+        - DeliveryHistory
+      operationId: getDeliveryHistory
       summary: 配信履歴詳細
       description: 配信履歴の詳細を取得する。
       parameters:
@@ -1728,6 +1834,9 @@ paths:
         - bearerAuth: []
   /advertisement-codes:
     get:
+      tags:
+        - AdvertisementCodes
+      operationId: listAdvertisementCodes
       summary: 広告コード一覧/検索
       description: 広告コードを検索し、一覧で返す。
       parameters:
@@ -1851,6 +1960,9 @@ paths:
       security:
         - bearerAuth: []
     post:
+      tags:
+        - AdvertisementCodes
+      operationId: createAdvertisementCode
       summary: 広告コード作成
       description: 広告コードを新規作成し、conversion_code を自動生成する。
       requestBody:
@@ -1911,6 +2023,9 @@ paths:
         - bearerAuth: []
   /advertisement-codes/{advertisement_code_id}:
     put:
+      tags:
+        - AdvertisementCodes
+      operationId: updateAdvertisementCode
       summary: 広告コード更新
       description: 広告コードを更新する（全項目）。
       parameters:
@@ -1984,6 +2099,9 @@ paths:
       security:
         - bearerAuth: []
     delete:
+      tags:
+        - AdvertisementCodes
+      operationId: deleteAdvertisementCode
       summary: 広告コード削除（物理）
       description: 広告コードを物理削除する。
       parameters:
@@ -2026,6 +2144,9 @@ paths:
 
   /postback-history:
     get:
+      tags:
+        - PostbackHistory
+      operationId: listPostbackHistory
       summary: ポストバック履歴一覧/検索
       description: ポストバック実行履歴を検索し、一覧で返す。
       parameters:
@@ -2120,6 +2241,9 @@ paths:
 
   /admins:
     get:
+      tags:
+        - Admins
+      operationId: listAdmins
       summary: 管理者一覧
       description: 管理者を一覧で返す。一般管理者はシステム管理者を含めない。
       parameters:
@@ -2167,6 +2291,9 @@ paths:
       security:
         - bearerAuth: []
     post:
+      tags:
+        - Admins
+      operationId: createAdmin
       summary: 管理者作成
       description: 管理者を作成する。cognito_sub はサーバー側で設定する。
       requestBody:
@@ -2210,6 +2337,9 @@ paths:
         - bearerAuth: []
   /admins/{admin_id}:
     put:
+      tags:
+        - Admins
+      operationId: updateAdmin
       summary: 管理者更新
       description: 管理者を更新する（全項目）。
       parameters:
@@ -2266,6 +2396,9 @@ paths:
       security:
         - bearerAuth: []
     delete:
+      tags:
+        - Admins
+      operationId: deleteAdmin
       summary: 管理者削除（物理）
       description: 管理者を物理削除する（要確認）。
       parameters:
@@ -2279,6 +2412,98 @@ paths:
       responses:
         '204':
           description: 削除成功
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+
+  /system-settings:
+    get:
+      tags:
+        - SystemSettings
+      operationId: getSystemSettings
+      summary: システム設定取得
+      description: システム設定を取得する（単一レコード想定、要確認）。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemSettings'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - SystemSettings
+      operationId: updateSystemSettings
+      summary: システム設定更新
+      description: システム設定を更新する。キー類は未指定/空の場合は更新しない想定（要確認）。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemSettingsUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemSettings'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: 認証エラー
           content:
@@ -3197,6 +3422,95 @@ components:
             json_data:
               type: object
               nullable: true
+
+    SystemSettings:
+      type: object
+      required:
+        - id
+        - site_name
+        - system_domain
+        - site_code
+        - image_storage_directory
+        - internal_image_url
+        - external_image_url
+        - conversion_api_target_url
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        site_name:
+          type: string
+          example: "利用サイト名"
+        system_domain:
+          type: string
+          example: "example.com"
+        site_code:
+          type: string
+          example: "LCONNESYS-2"
+        image_storage_directory:
+          type: string
+          example: "/var/www/images"
+        internal_image_url:
+          type: string
+          format: uri
+          example: "https://example.com/images/"
+        external_image_url:
+          type: string
+          format: uri
+          example: "https://cdn.example.com/images/"
+        line_access_key_masked:
+          type: string
+          nullable: true
+          example: "****abcd"
+        cms_webhook_key_masked:
+          type: string
+          nullable: true
+          example: "****wxyz"
+        cms_api_key_masked:
+          type: string
+          nullable: true
+          example: "****1234"
+        conversion_api_target_url:
+          type: string
+          example: "https://example.com/conversion?afn={+afn+}&line_friend_id={+line_friend_id+}"
+
+    SystemSettingsUpdateRequest:
+      type: object
+      required:
+        - site_name
+        - system_domain
+        - image_storage_directory
+        - internal_image_url
+        - external_image_url
+        - conversion_api_target_url
+      properties:
+        site_name:
+          type: string
+        system_domain:
+          type: string
+        image_storage_directory:
+          type: string
+        internal_image_url:
+          type: string
+          format: uri
+        external_image_url:
+          type: string
+          format: uri
+        line_access_key:
+          type: string
+          nullable: true
+          description: 未指定/空の場合は更新しない想定（要確認）
+        cms_webhook_key:
+          type: string
+          nullable: true
+          description: 未指定/空の場合は更新しない想定（要確認）
+        cms_api_key:
+          type: string
+          nullable: true
+          description: 未指定/空の場合は更新しない想定（要確認）
+        conversion_api_target_url:
+          type: string
 
     PostbackSetting:
       type: string
