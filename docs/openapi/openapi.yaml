@@ -170,6 +170,240 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - bearerAuth: []
+  /friends:
+    get:
+      summary: 友だち一覧/検索
+      description: 友だち一覧を取得し、検索条件で絞り込む。
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+            minimum: 1
+          description: ページ番号
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+            minimum: 1
+            maximum: 100
+          description: 1ページあたりの件数（最大100）
+        - name: management_ids
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_management_ids
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、management_ids を除外条件として扱う
+        - name: management_codes
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 管理コード（incode）の部分一致。複数指定は同名パラメータの繰り返し。※要確認
+        - name: exclude_management_codes
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、management_codes を除外条件として扱う
+        - name: advertisement_codes
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 広告コードの部分一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_advertisement_codes
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、advertisement_codes を除外条件として扱う
+        - name: line_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: LINE_IDの部分一致
+        - name: registered_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 登録日時の開始（JST）
+        - name: registered_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 登録日時の終了（JST）
+        - name: friend_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [normal, blocked]
+          description: 友だち状態（正常/ブロック）。複数指定可。
+        - name: line_official_basic_ids
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: LINE連携 basic_id の完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_line_official_basic_ids
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、line_official_basic_ids を除外条件として扱う
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FriendListResponse'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /friends/{friend_id}:
+    delete:
+      summary: 友だち削除（物理）
+      description: 友だちを物理削除し、関連履歴も削除する。
+      parameters:
+        - name: friend_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 友だちID（line_friends.id）
+      responses:
+        '204':
+          description: 削除成功
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-official-accounts:
+    get:
+      summary: LINE連携候補一覧
+      description: 友だち検索のため、LINE連携の basic_id 一覧を取得する。
+      parameters:
+        - name: fields
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [basic_id]
+          description: 取得項目の指定（暫定）
+          example: basic_id
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineOfficialAccountListResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
 
 components:
   securitySchemes:
@@ -269,6 +503,93 @@ components:
           type: integer
           format: int64
           example: 30
+
+    FriendListResponse:
+      type: object
+      required:
+        - items
+        - page
+        - limit
+        - total
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FriendListItem'
+        page:
+          type: integer
+          format: int32
+          example: 1
+        limit:
+          type: integer
+          format: int32
+          example: 100
+        total:
+          type: integer
+          format: int64
+          example: 9
+
+    FriendListItem:
+      type: object
+      required:
+        - id
+        - line_id
+        - registered_at
+        - is_blocked
+        - line_official_account_id
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 545
+        management_code:
+          type: string
+          nullable: true
+          description: 管理コード（incode）※要確認
+          example: null
+        advertisement_code:
+          type: string
+          nullable: true
+          example: yokota_x
+        line_id:
+          type: string
+          example: U11ae9eba73ac607c52138ed61bc0183a
+        registered_at:
+          type: string
+          format: date-time
+          example: "2026-04-01T10:57:00+09:00"
+        is_blocked:
+          type: boolean
+          example: true
+        line_official_account_id:
+          type: integer
+          format: int64
+          example: 1
+        line_official_basic_id:
+          type: string
+          nullable: true
+          example: "@937jhhcx"
+
+    LineOfficialAccountListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineOfficialAccountItem'
+
+    LineOfficialAccountItem:
+      type: object
+      required: [id, basic_id]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        basic_id:
+          type: string
+          example: "@937jhhcx"
 
     ErrorResponse:
       type: object
