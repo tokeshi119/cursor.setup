@@ -1607,6 +1607,125 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - bearerAuth: []
+  /delivery-history:
+    get:
+      summary: 配信履歴一覧/検索
+      description: 配信履歴を一覧で返す。
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: delivery_types
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DeliveryType'
+          description: 配信種別。複数指定可。
+        - name: delivery_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DeliveryStatus'
+          description: 配信状態。複数指定可。
+        - name: accepted_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 受付日時の開始（JST）
+        - name: accepted_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 受付日時の終了（JST）
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryHistoryListResponse'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /delivery-history/{delivery_history_id}:
+    get:
+      summary: 配信履歴詳細
+      description: 配信履歴の詳細を取得する。
+      parameters:
+        - name: delivery_history_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 配信履歴ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryHistoryDetail'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
   /advertisement-codes:
     get:
       summary: 広告コード一覧/検索
@@ -3005,6 +3124,79 @@ components:
         button_link_url:
           type: string
           maxLength: 1000
+
+    DeliveryType:
+      type: string
+      enum: [push, greet, reply]
+      description: 配信種別（push=プッシュ/ greet=挨拶 / reply=自動応答）
+
+    DeliveryStatus:
+      type: string
+      enum: [delivering, completed, error]
+      description: 配信状態
+
+    DeliveryHistoryListResponse:
+      allOf:
+        - $ref: '#/components/schemas/Pagination'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/DeliveryHistoryItem'
+
+    DeliveryHistoryItem:
+      type: object
+      required:
+        - id
+        - delivery_type
+        - delivery_status
+        - accepted_count
+        - executed_count
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 4556
+        delivery_type:
+          $ref: '#/components/schemas/DeliveryType'
+        delivery_status:
+          $ref: '#/components/schemas/DeliveryStatus'
+        accepted_count:
+          type: integer
+          format: int64
+          nullable: true
+          example: 600
+        executed_count:
+          type: integer
+          format: int64
+          example: 545
+        accepted_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-08-19T13:22:00+09:00"
+        delivery_executed_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-08-19T13:22:00+09:00"
+        execution_completed_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-08-19T13:22:00+09:00"
+
+    DeliveryHistoryDetail:
+      allOf:
+        - $ref: '#/components/schemas/DeliveryHistoryItem'
+        - type: object
+          required: [json_data]
+          properties:
+            json_data:
+              type: object
+              nullable: true
 
     PostbackSetting:
       type: string
