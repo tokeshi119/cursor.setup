@@ -29,7 +29,7 @@ Last updated: 2026-02-02
 |---------|------|------|
 | GET | /api/v1/friends | 友だち一覧/検索 |
 | DELETE | /api/v1/friends/{friend_id} | 友だち削除（物理） |
-| GET | /api/v1/line-official-accounts | LINE連携候補取得（basic_id） |
+| GET | /api/v1/line-official-accounts | LINE連携候補取得（id/basic_id） |
 
 ## 3. リクエスト仕様
 
@@ -135,13 +135,7 @@ friend_id:
 - 物理削除 + 関連履歴（line_friend_histories 等）の連鎖削除
 
 ### GET /api/v1/line-official-accounts
-
-#### クエリパラメータ
-fields:
-  type: string
-  required: false
-  description: 取得項目の指定（暫定）
-  example: basic_id
+※クエリパラメータなし
 
 ## 4. レスポンス構造サンプル
 

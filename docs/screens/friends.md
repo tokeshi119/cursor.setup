@@ -63,7 +63,7 @@ Last updated: 2026-02-02
 
 ## 7. APIメモ（暫定）
 - エンドポイント候補: GET /friends, DELETE /friends/{id}
-- LINE連携選択肢: GET /line-official-accounts?fields=basic_id
+- LINE連携選択肢: GET /line-official-accounts
 
 ## 8. 備考
 - 友だち詳細ページは作成しない

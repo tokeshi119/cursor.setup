@@ -175,25 +175,8 @@ paths:
       summary: 友だち一覧/検索
       description: 友だち一覧を取得し、検索条件で絞り込む。
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 1
-            minimum: 1
-          description: ページ番号
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 100
-            minimum: 1
-            maximum: 100
-          description: 1ページあたりの件数（最大100）
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
         - name: management_ids
           in: query
           required: false
@@ -263,17 +246,7 @@ paths:
             type: string
             format: date-time
           description: 登録日時の終了（JST）
-        - name: friend_statuses
-          in: query
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: array
-            items:
-              type: string
-              enum: [normal, blocked]
-          description: 友だち状態（正常/ブロック）。複数指定可。
+        - $ref: '#/components/parameters/FriendStatusesParam'
         - name: line_official_basic_ids
           in: query
           required: false
@@ -297,6 +270,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FriendListResponse'
+              examples:
+                list:
+                  summary: 一覧の例
+                  value:
+                    items:
+                      - id: 545
+                        management_code: null
+                        advertisement_code: "yokota_x"
+                        line_id: "U11ae9eba73ac607c52138ed61bc0183a"
+                        registered_at: "2026-04-01T10:57:00+09:00"
+                        is_blocked: true
+                        line_official_account_id: 1
+                        line_official_basic_id: "@937jhhcx"
+                      - id: 544
+                        management_code: null
+                        advertisement_code: "yt_konno"
+                        line_id: "U9ad374cb7dbadffc50684b61e9d6b310"
+                        registered_at: "2026-04-01T10:50:00+09:00"
+                        is_blocked: false
+                        line_official_account_id: 5
+                        line_official_basic_id: "@308hyibr"
+                    page: 1
+                    limit: 100
+                    total: 2
         '400':
           description: リクエスト不正
           content:
@@ -367,16 +364,7 @@ paths:
   /line-official-accounts:
     get:
       summary: LINE連携候補一覧
-      description: 友だち検索のため、LINE連携の basic_id 一覧を取得する。
-      parameters:
-        - name: fields
-          in: query
-          required: false
-          schema:
-            type: string
-            enum: [basic_id]
-          description: 取得項目の指定（暫定）
-          example: basic_id
+      description: 友だち検索のため、LINE連携の id / basic_id 一覧を取得する。
       responses:
         '200':
           description: 成功
@@ -404,6 +392,585 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - bearerAuth: []
+  /advertisement-codes:
+    get:
+      summary: 広告コード一覧/検索
+      description: 広告コードを検索し、一覧で返す。
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: management_ids
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_management_ids
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、management_ids を除外条件として扱う
+        - name: advertisement_codes
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 広告コードの部分一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_advertisement_codes
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、advertisement_codes を除外条件として扱う
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 広告名の部分一致
+        - name: postback_settings
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PostbackSetting'
+          description: ポストバック設定。複数指定可。
+        - name: memo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: メモの部分一致
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvertisementCodeListResponse'
+              examples:
+                list:
+                  summary: 一覧の例
+                  value:
+                    items:
+                      - id: 545
+                        advertisement_code: "18ag1"
+                        conversion_code: "LCO1234567"
+                        name: "ああああ"
+                        postback_setting: custom
+                        friend_add_url: "https://li-connector2.com/ad/?afl=18ag1"
+                        memo: null
+                        custom_settings:
+                          postback_url: "https://example.com/postback"
+                          param_1_name: "click_id"
+                          param_2_name: "sub_id"
+                          param_3_name: null
+                          friend_id_param_name: "line_friend_id"
+                      - id: 546
+                        advertisement_code: "62ch10"
+                        conversion_code: "LCO1234568"
+                        name: "うぅぅぅ"
+                        postback_setting: meta
+                        friend_add_url: "https://li-connector2.com/ad/?afl=62ch10"
+                        memo: null
+                        custom_settings: null
+                    page: 1
+                    limit: 100
+                    total: 2
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    post:
+      summary: 広告コード作成
+      description: 広告コードを新規作成し、conversion_code を自動生成する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdvertisementCodeCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvertisementCodeItem'
+              examples:
+                created:
+                  summary: 作成成功の例
+                  value:
+                    id: 545
+                    advertisement_code: "18ag1"
+                    conversion_code: "LCO1234567"
+                    name: "ああああ"
+                    postback_setting: custom
+                    friend_add_url: "https://li-connector2.com/ad/?afl=18ag1"
+                    memo: null
+                    custom_settings:
+                      postback_url: "https://example.com/postback"
+                      param_1_name: "click_id"
+                      param_2_name: "sub_id"
+                      param_3_name: null
+                      friend_id_param_name: "line_friend_id"
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /advertisement-codes/{advertisement_code_id}:
+    put:
+      summary: 広告コード更新
+      description: 広告コードを更新する（全項目）。
+      parameters:
+        - name: advertisement_code_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 広告コードID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdvertisementCodeUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvertisementCodeItem'
+              examples:
+                updated:
+                  summary: 更新成功の例
+                  value:
+                    id: 545
+                    advertisement_code: "18ag1"
+                    conversion_code: "LCO1234567"
+                    name: "広告名更新"
+                    postback_setting: custom
+                    friend_add_url: "https://li-connector2.com/ad/?afl=18ag1"
+                    memo: "メモ更新"
+                    custom_settings:
+                      postback_url: "https://example.com/postback"
+                      param_1_name: "click_id"
+                      param_2_name: "sub_id"
+                      param_3_name: "param3"
+                      friend_id_param_name: "line_friend_id"
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: 広告コード削除（物理）
+      description: 広告コードを物理削除する。
+      parameters:
+        - name: advertisement_code_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 広告コードID
+      responses:
+        '204':
+          description: 削除成功
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+
+  /postback-history:
+    get:
+      summary: ポストバック履歴一覧/検索
+      description: ポストバック実行履歴を検索し、一覧で返す。
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: advertisement_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 広告コードの部分一致（単一）
+        - name: conversion_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: コンバージョンコードの部分一致（単一）
+        - name: line_friend_id
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 友だち管理IDの完全一致（単一）
+        - name: execution_url
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 実行URLの部分一致
+        - name: executed_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 実行日時の開始（JST）
+        - name: executed_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 実行日時の終了（JST）
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostbackHistoryListResponse'
+              examples:
+                list:
+                  summary: 一覧の例
+                  value:
+                    items:
+                      - executed_at: "2026-04-01T10:57:00+09:00"
+                        advertisement_code: "18ag1"
+                        conversion_code: "LCO1234567"
+                        line_friend_id: 545
+                        postback_setting: google
+                        execution_url: "https://ads.example.com/track?af=18ag1&member_id=545"
+                    page: 1
+                    limit: 100
+                    total: 1
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+
+  /admins:
+    get:
+      summary: 管理者一覧
+      description: 管理者を一覧で返す。一般管理者はシステム管理者を含めない。
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminListResponse'
+              examples:
+                list:
+                  summary: 一覧の例
+                  value:
+                    items:
+                      - id: 1
+                        is_active: true
+                        name: "テスト専用"
+                        login_id: "test"
+                        role: admin
+                        memo: null
+                    page: 1
+                    limit: 100
+                    total: 1
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    post:
+      summary: 管理者作成
+      description: 管理者を作成する。cognito_sub はサーバー側で設定する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminItem'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /admins/{admin_id}:
+    put:
+      summary: 管理者更新
+      description: 管理者を更新する（全項目）。
+      parameters:
+        - name: admin_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 管理者ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminItem'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: 管理者削除（物理）
+      description: 管理者を物理削除する（要確認）。
+      parameters:
+        - name: admin_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 管理者ID
+      responses:
+        '204':
+          description: 削除成功
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
 
 components:
   securitySchemes:
@@ -412,7 +979,67 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 1
+        minimum: 1
+      description: ページ番号
+    LimitParam:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 100
+        minimum: 1
+        maximum: 100
+      description: 1ページあたりの件数（最大100）
+    FriendStatusesParam:
+      name: friend_statuses
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/FriendStatus'
+      description: 友だち状態（正常/ブロック）。複数指定可。
+
   schemas:
+    Pagination:
+      type: object
+      required: [page, limit, total]
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 1
+        limit:
+          type: integer
+          format: int32
+          example: 100
+        total:
+          type: integer
+          format: int64
+          example: 1
+
+    FriendStatus:
+      type: string
+      enum: [normal, blocked]
+      description: 友だち状態
+
+    AdminRole:
+      type: string
+      enum: [admin, normal]
+      description: 権限（admin=システム管理者, normal=一般管理者）
     UsageStatsResponse:
       type: object
       required:
@@ -505,29 +1132,15 @@ components:
           example: 30
 
     FriendListResponse:
-      type: object
-      required:
-        - items
-        - page
-        - limit
-        - total
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/FriendListItem'
-        page:
-          type: integer
-          format: int32
-          example: 1
-        limit:
-          type: integer
-          format: int32
-          example: 100
-        total:
-          type: integer
-          format: int64
-          example: 9
+      allOf:
+        - $ref: '#/components/schemas/Pagination'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/FriendListItem'
 
     FriendListItem:
       type: object
@@ -570,6 +1183,74 @@ components:
           nullable: true
           example: "@937jhhcx"
 
+    AdminListResponse:
+      allOf:
+        - $ref: '#/components/schemas/Pagination'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/AdminItem'
+
+    AdminItem:
+      type: object
+      required:
+        - id
+        - is_active
+        - name
+        - login_id
+        - role
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        is_active:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: "テスト専用"
+        login_id:
+          type: string
+          example: "test"
+        role:
+          $ref: '#/components/schemas/AdminRole'
+        memo:
+          type: string
+          nullable: true
+          example: null
+
+    AdminCreateRequest:
+      type: object
+      required:
+        - is_active
+        - name
+        - login_id
+        - role
+      properties:
+        is_active:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: "テスト専用"
+        login_id:
+          type: string
+          example: "test"
+        role:
+          $ref: '#/components/schemas/AdminRole'
+        memo:
+          type: string
+          nullable: true
+          example: null
+
+    AdminUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/AdminCreateRequest'
+
     LineOfficialAccountListResponse:
       type: object
       required: [items]
@@ -590,6 +1271,155 @@ components:
         basic_id:
           type: string
           example: "@937jhhcx"
+
+    PostbackSetting:
+      type: string
+      enum: [none, custom, google, meta, tiktok, line]
+      description: ポストバック設定
+
+    AdvertisementCodeCustomSettings:
+      type: object
+      description: custom時の設定。置換タグ {+afn+}, {+afn2+}, {+line_friend_id+} を利用（要確認）
+      properties:
+        postback_url:
+          type: string
+          format: uri
+        param_1_name:
+          type: string
+        param_2_name:
+          type: string
+        param_3_name:
+          type: string
+        friend_id_param_name:
+          type: string
+      additionalProperties: true
+
+    AdvertisementCodeCreateRequest:
+      type: object
+      required:
+        - advertisement_code
+        - name
+        - postback_setting
+      properties:
+        advertisement_code:
+          type: string
+          maxLength: 30
+          description: 広告コード（半角英数, 30文字まで）
+          example: "18ag1"
+        name:
+          type: string
+          maxLength: 30
+          description: 広告名（30文字まで）
+          example: "ああああ"
+        postback_setting:
+          $ref: '#/components/schemas/PostbackSetting'
+        memo:
+          type: string
+          maxLength: 1000
+          nullable: true
+        custom_settings:
+          allOf:
+            - $ref: '#/components/schemas/AdvertisementCodeCustomSettings'
+          nullable: true
+      description: postback_setting=custom の場合は custom_settings が必須
+
+    AdvertisementCodeUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/AdvertisementCodeCreateRequest'
+
+    AdvertisementCodeListResponse:
+      allOf:
+        - $ref: '#/components/schemas/Pagination'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/AdvertisementCodeItem'
+
+    AdvertisementCodeItem:
+      type: object
+      required:
+        - id
+        - advertisement_code
+        - conversion_code
+        - name
+        - postback_setting
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 545
+        advertisement_code:
+          type: string
+          maxLength: 30
+          example: "18ag1"
+        conversion_code:
+          type: string
+          minLength: 10
+          maxLength: 10
+          pattern: '^LCO\d{7}$'
+          description: LCO + 7桁の10文字コード
+          example: "LCO1234567"
+        name:
+          type: string
+          maxLength: 30
+          example: "ああああ"
+        postback_setting:
+          $ref: '#/components/schemas/PostbackSetting'
+        friend_add_url:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://li-connector2.com/ad/?afl=18ag1"
+        memo:
+          type: string
+          maxLength: 1000
+          nullable: true
+        custom_settings:
+          $ref: '#/components/schemas/AdvertisementCodeCustomSettings'
+
+    PostbackHistoryListResponse:
+      allOf:
+        - $ref: '#/components/schemas/Pagination'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostbackHistoryItem'
+
+    PostbackHistoryItem:
+      type: object
+      required:
+        - executed_at
+        - advertisement_code
+        - conversion_code
+        - line_friend_id
+        - postback_setting
+        - execution_url
+      properties:
+        executed_at:
+          type: string
+          format: date-time
+          example: "2026-04-01T10:57:00+09:00"
+        advertisement_code:
+          type: string
+          example: "18ag1"
+        conversion_code:
+          type: string
+          example: "LCO1234567"
+        line_friend_id:
+          type: integer
+          format: int64
+          example: 545
+        postback_setting:
+          $ref: '#/components/schemas/PostbackSetting'
+        execution_url:
+          type: string
+          example: "https://ads.example.com/track?af=18ag1&member_id=545"
 
     ErrorResponse:
       type: object
