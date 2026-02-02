@@ -1461,6 +1461,152 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - bearerAuth: []
+  /rich-menu:
+    get:
+      summary: リッチメニュー取得
+      description: リッチメニュー（固定1種類）を取得する。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RichMenu'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    put:
+      summary: リッチメニュー更新
+      description: リッチメニュー（固定1種類）を更新する。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RichMenuUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RichMenu'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /auto-response-message:
+    get:
+      summary: 自動応答メッセージ取得
+      description: 自動応答メッセージ（固定1種類）を取得する。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoResponseMessage'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    put:
+      summary: 自動応答メッセージ更新
+      description: 自動応答メッセージ（固定1種類）を更新する。テンプレートはボタン型のみ、画像は使用しない。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutoResponseMessageUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutoResponseMessage'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
   /advertisement-codes:
     get:
       summary: 広告コード一覧/検索
@@ -2344,7 +2490,7 @@ components:
     LineAccountUsageStatus:
       type: string
       enum: [in_use, unused, disabled]
-      description: 使用状況
+      description: 使用状況。BAN検知時は自動でdisabledへ遷移し、disabledは自動フェイルチェック対象外。
 
     LineAccountLineGuidanceStatus:
       type: string
@@ -2731,6 +2877,132 @@ components:
           type: string
           maxLength: 10
         notice_link_url:
+          type: string
+          maxLength: 1000
+
+    RichMenuStatus:
+      type: string
+      enum: [applied, released]
+      description: 適用ステータス
+
+    RichMenuActionType:
+      type: string
+      enum: [url, none]
+      description: アクション種別
+
+    RichMenuAction:
+      type: object
+      required: [action_type]
+      properties:
+        action_type:
+          $ref: '#/components/schemas/RichMenuActionType'
+        url:
+          type: string
+          nullable: true
+          maxLength: 1000
+          example: "https://example.com"
+
+    RichMenu:
+      type: object
+      required:
+        - status
+        - menu_bar_text
+        - image_url
+        - template_id
+        - actions
+      properties:
+        status:
+          $ref: '#/components/schemas/RichMenuStatus'
+        menu_bar_text:
+          type: string
+          maxLength: 14
+          example: "メニュー"
+        image_url:
+          type: string
+          example: "https://cdn.example.com/line/rich-menu.png"
+        template_id:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 10
+          example: 3
+        actions:
+          type: array
+          description: template_id により必要な枠数が異なる（要確認）
+          maxItems: 6
+          items:
+            $ref: '#/components/schemas/RichMenuAction'
+
+    RichMenuUpdateRequest:
+      type: object
+      required:
+        - status
+        - menu_bar_text
+        - image
+        - template_id
+        - actions
+      properties:
+        status:
+          $ref: '#/components/schemas/RichMenuStatus'
+        menu_bar_text:
+          type: string
+          maxLength: 14
+        image:
+          type: string
+          format: binary
+          description: JPEG/PNG（幅810pxまたは405px、高さ1200px、1MB以内）
+        template_id:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 10
+        actions:
+          type: string
+          description: JSON文字列（最大6枠, URL指定/使用しない）。template_id により必要な枠数が異なる（要確認）
+
+    AutoResponseMessageSendStatus:
+      type: string
+      enum: [enabled, disabled]
+      description: 送信ステータス
+
+    AutoResponseMessage:
+      type: object
+      required:
+        - send_status
+        - message_text
+        - button_label
+        - button_link_url
+      properties:
+        send_status:
+          $ref: '#/components/schemas/AutoResponseMessageSendStatus'
+        message_text:
+          type: string
+          example: "お問い合わせありがとうございます。"
+        button_label:
+          type: string
+          maxLength: 10
+          example: "詳細を見る"
+        button_link_url:
+          type: string
+          maxLength: 1000
+          example: "https://example.com/help"
+
+    AutoResponseMessageUpdateRequest:
+      type: object
+      required:
+        - send_status
+        - message_text
+        - button_label
+        - button_link_url
+      properties:
+        send_status:
+          $ref: '#/components/schemas/AutoResponseMessageSendStatus'
+        message_text:
+          type: string
+        button_label:
+          type: string
+          maxLength: 10
+        button_link_url:
           type: string
           maxLength: 1000
 
