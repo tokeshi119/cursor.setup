@@ -392,6 +392,1002 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - bearerAuth: []
+  /line-accounts:
+    get:
+      summary: LINE設定一覧/検索
+      description: LINE設定を検索し、一覧で返す（検索条件の対象範囲は要相談。暫定は management_ids/usage_statuses/basic_id のみ）。
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: management_ids
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_management_ids
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、management_ids を除外条件として扱う
+        - name: usage_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountUsageStatus'
+          description: 使用状況。複数指定可。
+        - name: basic_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ベーシックIDの部分一致
+        - name: friend_count_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [total, non_blocked]
+          description: 友だち数の対象（合計/非ブロック）
+        - name: friend_count_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 友だち数の下限
+        - name: friend_count_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 友だち数の上限
+        - name: line_guidance_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+          description: 別LINE誘導の表示。複数指定可。
+        - name: distribution_targets
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountDistributionTarget'
+          description: 振り分け先。複数指定可。
+        - name: delivery_limit_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 配信数上限の下限
+        - name: delivery_limit_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 配信数上限の上限
+        - name: current_month_delivery_count_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 当月配信数の下限
+        - name: current_month_delivery_count_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 当月配信数の上限
+        - name: delivery_consumption_rate_min
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+          description: 配信消化率（%）の下限
+        - name: delivery_consumption_rate_max
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+          description: 配信消化率（%）の上限
+        - name: liveness_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountLivenessStatus'
+          description: 生存状況。複数指定可。
+        - name: webhook_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountWebhookStatus'
+          description: webhookの状態。複数指定可。
+        - name: ban_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: BAN発生日の開始（JST）
+        - name: ban_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: BAN発生日の終了（JST）
+        - name: system_memo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: システムメモの部分一致
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountListResponse'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    post:
+      summary: LINE設定作成（手動登録）
+      description: LINE設定を新規作成する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountCreateRequest'
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountDetail'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/{line_account_id}:
+    get:
+      summary: LINE設定詳細
+      description: LINE設定の詳細を取得する。
+      parameters:
+        - name: line_account_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: LINE設定ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountDetail'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    put:
+      summary: LINE設定更新
+      description: LINE設定を更新する（全項目）。
+      parameters:
+        - name: line_account_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: LINE設定ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountDetail'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: LINE設定削除（物理）
+      description: LINE設定を物理削除する。
+      parameters:
+        - name: line_account_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: LINE設定ID
+      responses:
+        '204':
+          description: 削除成功
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/{line_account_id}/linkage-check:
+    post:
+      summary: LINE連携チェック
+      description: LINE設定の連携チェックを実行する。
+      parameters:
+        - name: line_account_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: LINE設定ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountLinkageCheckResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 対象なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/usage-status:
+    post:
+      summary: 使用状況の一括切替
+      description: 指定したLINE設定の使用状況を一括で切り替える。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkUsageStatusRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/line-guidance:
+    post:
+      summary: 別LINE誘導の一括切替
+      description: 指定したLINE設定の別LINE誘導を一括で切り替える。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkLineGuidanceRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/distribution-target:
+    post:
+      summary: 振り分け先の一括切替
+      description: 指定したLINE設定の振り分け先を一括で切り替える。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkDistributionTargetRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/liveness-check:
+    post:
+      summary: 生存チェック（複数）
+      description: 指定したLINE設定の生存チェックを実行する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/webhook-check:
+    post:
+      summary: webhookチェック（複数）
+      description: 指定したLINE設定のwebhookチェックを実行する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/webhook-refresh:
+    post:
+      summary: webhook更新（複数）
+      description: 指定したLINE設定のwebhook更新を実行する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/bulk/access-token-refresh:
+    post:
+      summary: アクセストークン更新（複数）
+      description: 指定したLINE設定のアクセストークン更新を実行する。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountBulkActionResult'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/csv-format:
+    get:
+      summary: CSVフォーマットダウンロード
+      description: LINE設定CSVインポート用のフォーマットを取得する。
+      responses:
+        '200':
+          description: 成功
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/csv-import:
+    post:
+      summary: CSVインポート登録
+      description: CSVをアップロードしてLINE設定を一括登録する。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineAccountCsvImportResponse'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /line-accounts/csv:
+    get:
+      summary: CSVダウンロード
+      description: LINE設定一覧をCSVでダウンロードする。
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: management_ids
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_management_ids
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: true の場合、management_ids を除外条件として扱う
+        - name: usage_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountUsageStatus'
+          description: 使用状況。複数指定可。
+        - name: basic_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ベーシックIDの部分一致
+        - name: friend_count_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [total, non_blocked]
+          description: 友だち数の対象（合計/非ブロック）
+        - name: friend_count_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 友だち数の下限
+        - name: friend_count_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 友だち数の上限
+        - name: line_guidance_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+          description: 別LINE誘導の表示。複数指定可。
+        - name: distribution_targets
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountDistributionTarget'
+          description: 振り分け先。複数指定可。
+        - name: delivery_limit_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 配信数上限の下限
+        - name: delivery_limit_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 配信数上限の上限
+        - name: current_month_delivery_count_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 当月配信数の下限
+        - name: current_month_delivery_count_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 当月配信数の上限
+        - name: delivery_consumption_rate_min
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+          description: 配信消化率（%）の下限
+        - name: delivery_consumption_rate_max
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+          description: 配信消化率（%）の上限
+        - name: liveness_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountLivenessStatus'
+          description: 生存状況。複数指定可。
+        - name: webhook_statuses
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/LineAccountWebhookStatus'
+          description: webhookの状態。複数指定可。
+        - name: ban_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: BAN発生日の開始（JST）
+        - name: ban_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: BAN発生日の終了（JST）
+        - name: system_memo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: システムメモの部分一致
+      responses:
+        '200':
+          description: 成功
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
   /advertisement-codes:
     get:
       summary: 広告コード一覧/検索
@@ -1271,6 +2267,324 @@ components:
         basic_id:
           type: string
           example: "@937jhhcx"
+
+    LineAccountUsageStatus:
+      type: string
+      enum: [in_use, unused, disabled]
+      description: 使用状況
+
+    LineAccountLineGuidanceStatus:
+      type: string
+      enum: [on, off]
+      description: 別LINE誘導の表示
+
+    LineAccountDistributionTarget:
+      type: string
+      enum: [target, excluded]
+      description: 振り分け先
+
+    LineAccountLivenessStatus:
+      type: string
+      enum: [normal, banned]
+      description: 生存状況
+
+    LineAccountWebhookStatus:
+      type: string
+      enum: [ok, error]
+      description: webhookの状態
+
+    LineAccountListResponse:
+      allOf:
+        - $ref: '#/components/schemas/Pagination'
+        - type: object
+          required: [items]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/LineAccountListItem'
+
+    LineAccountListItem:
+      type: object
+      required:
+        - id
+        - usage_status
+        - basic_id
+        - friend_count_total
+        - friend_count_non_blocked
+        - line_guidance_status
+        - distribution_target
+        - delivery_limit
+        - current_month_delivery_count
+        - delivery_consumption_rate
+        - liveness_status
+        - webhook_status
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 45
+        usage_status:
+          $ref: '#/components/schemas/LineAccountUsageStatus'
+        basic_id:
+          type: string
+          example: "@213huezt"
+        friend_count_total:
+          type: integer
+          format: int64
+          example: 125
+        friend_count_non_blocked:
+          type: integer
+          format: int64
+          example: 54
+        line_guidance_status:
+          $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+        distribution_target:
+          $ref: '#/components/schemas/LineAccountDistributionTarget'
+        delivery_limit:
+          type: integer
+          format: int64
+          example: 500
+        current_month_delivery_count:
+          type: integer
+          format: int64
+          example: 25
+        delivery_consumption_rate:
+          type: number
+          format: float
+          example: 5.0
+        liveness_status:
+          $ref: '#/components/schemas/LineAccountLivenessStatus'
+        webhook_status:
+          $ref: '#/components/schemas/LineAccountWebhookStatus'
+        ban_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        system_memo_masked:
+          type: string
+          nullable: true
+          example: "******"
+
+    LineAccountDetail:
+      type: object
+      required:
+        - id
+        - usage_status
+        - basic_id
+        - channel_id
+        - channel_secret
+        - line_guidance_status
+        - distribution_target
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 224
+        usage_status:
+          $ref: '#/components/schemas/LineAccountUsageStatus'
+        basic_id:
+          type: string
+          example: "@213huezt"
+        channel_id:
+          type: string
+          maxLength: 200
+          example: "2007592653"
+        channel_secret:
+          type: string
+          maxLength: 200
+          example: "ffff86b35fb8144ef1cebbeaa242cde8"
+        line_guidance_status:
+          $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+        distribution_target:
+          $ref: '#/components/schemas/LineAccountDistributionTarget'
+        system_memo:
+          type: string
+          maxLength: 1000
+          nullable: true
+          example: null
+        access_token_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-09-18T02:00:02+09:00"
+        access_token:
+          type: string
+          nullable: true
+          example: "xxxxx"
+        redirect_url:
+          type: string
+          nullable: true
+          example: "https://line.me/R/ti/p/%40l23huezt"
+        webhook_url:
+          type: string
+          nullable: true
+          example: "https://muteking.com/api/linebot/"
+
+    LineAccountCreateRequest:
+      type: object
+      required:
+        - usage_status
+        - basic_id
+        - channel_id
+        - channel_secret
+        - line_guidance_status
+        - distribution_target
+      properties:
+        usage_status:
+          $ref: '#/components/schemas/LineAccountUsageStatus'
+        basic_id:
+          type: string
+          maxLength: 20
+          example: "@213huezt"
+        channel_id:
+          type: string
+          maxLength: 200
+          example: "2007592653"
+        channel_secret:
+          type: string
+          maxLength: 200
+          example: "ffff86b35fb8144ef1cebbeaa242cde8"
+        line_guidance_status:
+          $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+        distribution_target:
+          $ref: '#/components/schemas/LineAccountDistributionTarget'
+        system_memo:
+          type: string
+          maxLength: 1000
+          nullable: true
+          example: null
+
+    LineAccountUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/LineAccountCreateRequest'
+
+    LineAccountBulkActionRequest:
+      type: object
+      required: [line_account_ids]
+      properties:
+        line_account_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: LINE設定IDの配列
+
+    LineAccountBulkUsageStatusRequest:
+      allOf:
+        - $ref: '#/components/schemas/LineAccountBulkActionRequest'
+        - type: object
+          required: [usage_status]
+          properties:
+            usage_status:
+              $ref: '#/components/schemas/LineAccountUsageStatus'
+
+    LineAccountBulkLineGuidanceRequest:
+      allOf:
+        - $ref: '#/components/schemas/LineAccountBulkActionRequest'
+        - type: object
+          required: [line_guidance_status]
+          properties:
+            line_guidance_status:
+              $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+
+    LineAccountBulkDistributionTargetRequest:
+      allOf:
+        - $ref: '#/components/schemas/LineAccountBulkActionRequest'
+        - type: object
+          required: [distribution_target]
+          properties:
+            distribution_target:
+              $ref: '#/components/schemas/LineAccountDistributionTarget'
+
+    LineAccountBulkActionItemStatus:
+      type: string
+      enum: [success, failed]
+
+    LineAccountBulkActionItem:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 35
+        status:
+          $ref: '#/components/schemas/LineAccountBulkActionItemStatus'
+        message:
+          type: string
+          nullable: true
+          example: null
+
+    LineAccountBulkActionResult:
+      type: object
+      required: [summary, items]
+      properties:
+        summary:
+          type: object
+          required: [requested, succeeded, failed]
+          properties:
+            requested:
+              type: integer
+              format: int32
+              example: 3
+            succeeded:
+              type: integer
+              format: int32
+              example: 2
+            failed:
+              type: integer
+              format: int32
+              example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineAccountBulkActionItem'
+
+    LineAccountLinkageCheckResponse:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 224
+        status:
+          $ref: '#/components/schemas/LineAccountBulkActionItemStatus'
+        message:
+          type: string
+          nullable: true
+          example: null
+
+    LineAccountCsvImportError:
+      type: object
+      required: [row_number, message]
+      properties:
+        row_number:
+          type: integer
+          format: int32
+          example: 5
+        message:
+          type: string
+          example: "B列: ベーシックIDの形式が不正"
+
+    LineAccountCsvImportResponse:
+      type: object
+      required: [imported_count, skipped_count, errors]
+      properties:
+        imported_count:
+          type: integer
+          format: int32
+          example: 10
+        skipped_count:
+          type: integer
+          format: int32
+          example: 2
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineAccountCsvImportError'
 
     PostbackSetting:
       type: string

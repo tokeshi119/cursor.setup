@@ -4,16 +4,16 @@ overview: 提供されたLINE設定系のモック（検索/一覧/手動登録/
 todos:
   - id: extract-ui-requirements
     content: モック画像から表示/操作/制約を整理
-    status: in_progress
+    status: completed
   - id: define-endpoints
     content: リソース名とCRUD+アクション+CSVのAPI案作成
-    status: pending
+    status: completed
   - id: spec-requests-responses
     content: 検索/登録/更新/一括/CSVの仕様定義
-    status: pending
+    status: completed
   - id: update-openapi-docs
     content: OpenAPIとAPI設計書に反映
-    status: pending
+    status: completed
 isProject: false
 ---
 
