@@ -1388,6 +1388,79 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - bearerAuth: []
+  /greeting-message:
+    get:
+      summary: 挨拶メッセージ取得
+      description: 挨拶メッセージ（固定1種類）を取得する。
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMessage'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+    put:
+      summary: 挨拶メッセージ更新
+      description: 挨拶メッセージ（固定1種類）を更新する。テンプレートはボタン型のみ。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GreetingMessageUpdateRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingMessage'
+        '400':
+          description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 権限エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
   /advertisement-codes:
     get:
       summary: 広告コード一覧/検索
@@ -2585,6 +2658,81 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LineAccountCsvImportError'
+
+    GreetingMessageSendTiming:
+      type: string
+      enum: [friend_added, unblocked]
+      description: 送信タイミング
+
+    GreetingMessage:
+      type: object
+      required:
+        - send_timing
+        - notice_title
+        - notice_body
+        - notice_button_label
+        - notice_link_url
+      properties:
+        send_timing:
+          $ref: '#/components/schemas/GreetingMessageSendTiming'
+        icon_image_url:
+          type: string
+          nullable: true
+          example: "https://cdn.example.com/line/icon.png"
+        notice_image_url:
+          type: string
+          nullable: true
+          example: "https://cdn.example.com/line/notice.png"
+        notice_title:
+          type: string
+          maxLength: 40
+          example: "ようこそ"
+        notice_body:
+          type: string
+          maxLength: 60
+          example: "まずはメニューをご確認ください。"
+        notice_button_label:
+          type: string
+          maxLength: 10
+          example: "開く"
+        notice_link_url:
+          type: string
+          maxLength: 1000
+          example: "https://example.com/welcome"
+
+    GreetingMessageUpdateRequest:
+      type: object
+      required:
+        - send_timing
+        - notice_title
+        - notice_body
+        - notice_button_label
+        - notice_link_url
+      properties:
+        send_timing:
+          $ref: '#/components/schemas/GreetingMessageSendTiming'
+        icon_image:
+          type: string
+          format: binary
+          nullable: true
+          description: アイコン画像（広告コード計測はここで実施）
+        notice_image:
+          type: string
+          format: binary
+          nullable: true
+          description: 通知用画像
+        notice_title:
+          type: string
+          maxLength: 40
+        notice_body:
+          type: string
+          maxLength: 60
+        notice_button_label:
+          type: string
+          maxLength: 10
+        notice_link_url:
+          type: string
+          maxLength: 1000
 
     PostbackSetting:
       type: string
