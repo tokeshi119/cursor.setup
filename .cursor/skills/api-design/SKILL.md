@@ -37,8 +37,15 @@ REST API設計を一貫した基準で整理し、レビュー可能な形にす
 - 認証・認可方針
 - 既知の懸念点
 
+## 関連スキル（推奨フロー）
+- 一連工程を回す: `api-design-pipeline`
+- 要件固め: `api-intake-screen-spec`
+- OpenAPI生成: `api-generate-openapi`
+- 機械検査: `api-validate-openapi`
+- レビュー: `api-review-checklist`
+
 ## 参照
 - 詳細: `references/core.md`
 
 ## 更新日
-2026-01-30
+2026-02-03

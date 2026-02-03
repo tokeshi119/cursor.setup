@@ -1,0 +1,4 @@
+# Updated: 2026-02-03
+interface:
+  display_name: "API Review Checklist"
+  short_description: "Run a structured review checklist for API specs"

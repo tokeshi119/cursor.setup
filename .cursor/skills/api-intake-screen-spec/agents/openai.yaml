@@ -1,0 +1,4 @@
+# Updated: 2026-02-03
+interface:
+  display_name: "API Intake Screen Spec"
+  short_description: "Guide intake of screen specs for API design"

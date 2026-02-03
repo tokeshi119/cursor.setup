@@ -1,0 +1,4 @@
+# Updated: 2026-02-03
+interface:
+  display_name: "API Generate OpenAPI"
+  short_description: "Transform screen specs into OpenAPI 3.1 YAML"

@@ -1,0 +1,4 @@
+# Updated: 2026-02-03
+interface:
+  display_name: "API Validate OpenAPI"
+  short_description: "Validate OpenAPI files with lint and checks"
