@@ -89,12 +89,12 @@ paths:
           description: granularity=hour のとき必須（YYYY-MM-DD）。year/month と同時指定は 400。
           example: "2026-01-01"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsageStatsResponse'
+                $ref: "#/components/schemas/UsageStatsResponse"
               examples:
                 month:
                   summary: 月別の例（2026年）
@@ -174,12 +174,12 @@ paths:
                         push_deliveries: 0
                         reply_deliveries: 0
                         total_deliveries: 0
-        '400':
+        "400":
           description: リクエスト不正
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 invalid_params:
                   summary: パラメータ不正の例
@@ -191,12 +191,12 @@ paths:
                         - field: month
                           issue: 形式不正
                       trace_id: "00000000-0000-0000-0000-000000000000"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /friends:
@@ -207,8 +207,8 @@ paths:
       summary: 友だち一覧/検索
       description: 友だち一覧を取得し、検索条件で絞り込む。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: management_ids
           in: query
           required: false
@@ -278,7 +278,7 @@ paths:
             type: string
             format: date-time
           description: 登録日時の終了（JST）（= line_friends.created_at）
-        - $ref: '#/components/parameters/FriendStatusesParam'
+        - $ref: "#/components/parameters/FriendStatusesParam"
         - name: line_official_basic_ids
           in: query
           required: false
@@ -296,12 +296,12 @@ paths:
             type: boolean
           description: true の場合、line_official_basic_ids を除外条件として扱う
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FriendListResponse'
+                $ref: "#/components/schemas/FriendListResponse"
               examples:
                 list:
                   summary: 一覧の例
@@ -326,14 +326,14 @@ paths:
                     page: 1
                     limit: 100
                     total: 2
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /friends/{friend_id}:
@@ -352,16 +352,16 @@ paths:
             format: int64
           description: 友だちID（line_friends.id）
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-official-accounts:
@@ -372,18 +372,18 @@ paths:
       summary: LINE連携候補一覧
       description: 友だち検索のため、LINE連携の id / basic_id 一覧を取得する。
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineOfficialAccountListResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineOfficialAccountListResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts:
@@ -394,8 +394,8 @@ paths:
       summary: LINE設定一覧/検索
       description: LINE設定を検索し、一覧で返す（検索条件の対象範囲は要相談。暫定は management_ids/usage_statuses/basic_id のみ）。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: management_ids
           in: query
           required: false
@@ -421,7 +421,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountUsageStatus'
+              $ref: "#/components/schemas/LineAccountUsageStatus"
           description: 使用状況。複数指定可。
         - name: basic_id
           in: query
@@ -458,7 +458,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+              $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
           description: 別LINE誘導の表示。複数指定可。
         - name: distribution_targets
           in: query
@@ -468,7 +468,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountDistributionTarget'
+              $ref: "#/components/schemas/LineAccountDistributionTarget"
           description: 振り分け先。複数指定可。
         - name: delivery_limit_min
           in: query
@@ -520,7 +520,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountLivenessStatus'
+              $ref: "#/components/schemas/LineAccountLivenessStatus"
           description: 配信状態。複数指定可。
         - name: webhook_statuses
           in: query
@@ -530,7 +530,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountWebhookStatus'
+              $ref: "#/components/schemas/LineAccountWebhookStatus"
           description: webhookの状態。複数指定可。
         - name: ban_from
           in: query
@@ -553,20 +553,20 @@ paths:
             type: string
           description: システムメモの部分一致
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountListResponse'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountListResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     post:
@@ -580,22 +580,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountCreateRequest'
+              $ref: "#/components/schemas/LineAccountCreateRequest"
       responses:
-        '201':
+        "201":
           description: 作成成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountDetail'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountDetail"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/{line_account_id}:
@@ -614,20 +614,20 @@ paths:
             format: int64
           description: LINE設定ID
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountDetail'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountDetail"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -649,24 +649,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountUpdateRequest'
+              $ref: "#/components/schemas/LineAccountUpdateRequest"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountDetail'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountDetail"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     delete:
@@ -684,16 +684,16 @@ paths:
             format: int64
           description: LINE設定ID
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/{line_account_id}/linkage-check:
@@ -712,20 +712,20 @@ paths:
             format: int64
           description: LINE設定ID
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountLinkageCheckResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountLinkageCheckResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/usage-status:
@@ -740,22 +740,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkUsageStatusRequest'
+              $ref: "#/components/schemas/LineAccountBulkUsageStatusRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/line-guidance:
@@ -770,22 +770,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkLineGuidanceRequest'
+              $ref: "#/components/schemas/LineAccountBulkLineGuidanceRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/distribution-target:
@@ -800,22 +800,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkDistributionTargetRequest'
+              $ref: "#/components/schemas/LineAccountBulkDistributionTargetRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/liveness-check:
@@ -830,22 +830,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+              $ref: "#/components/schemas/LineAccountBulkActionRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/webhook-check:
@@ -860,22 +860,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+              $ref: "#/components/schemas/LineAccountBulkActionRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/webhook-refresh:
@@ -890,22 +890,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+              $ref: "#/components/schemas/LineAccountBulkActionRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/bulk/access-token-refresh:
@@ -920,22 +920,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LineAccountBulkActionRequest'
+              $ref: "#/components/schemas/LineAccountBulkActionRequest"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountBulkActionResult'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountBulkActionResult"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/csv-format:
@@ -946,19 +946,19 @@ paths:
       summary: CSVフォーマットダウンロード
       description: LINE設定CSVインポート用のフォーマットを取得する。
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             text/csv:
               schema:
                 type: string
                 format: binary
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/csv-import:
@@ -980,20 +980,20 @@ paths:
                   type: string
                   format: binary
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LineAccountCsvImportResponse'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/LineAccountCsvImportResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /line-accounts/csv:
@@ -1004,8 +1004,8 @@ paths:
       summary: CSVダウンロード
       description: LINE設定一覧をCSVでダウンロードする。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: management_ids
           in: query
           required: false
@@ -1031,7 +1031,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountUsageStatus'
+              $ref: "#/components/schemas/LineAccountUsageStatus"
           description: 使用状況。複数指定可。
         - name: basic_id
           in: query
@@ -1068,7 +1068,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+              $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
           description: 別LINE誘導の表示。複数指定可。
         - name: distribution_targets
           in: query
@@ -1078,7 +1078,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountDistributionTarget'
+              $ref: "#/components/schemas/LineAccountDistributionTarget"
           description: 振り分け先。複数指定可。
         - name: delivery_limit_min
           in: query
@@ -1130,7 +1130,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountLivenessStatus'
+              $ref: "#/components/schemas/LineAccountLivenessStatus"
           description: 配信状態。複数指定可。
         - name: webhook_statuses
           in: query
@@ -1140,7 +1140,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/LineAccountWebhookStatus'
+              $ref: "#/components/schemas/LineAccountWebhookStatus"
           description: webhookの状態。複数指定可。
         - name: ban_from
           in: query
@@ -1163,19 +1163,19 @@ paths:
             type: string
           description: システムメモの部分一致
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             text/csv:
               schema:
                 type: string
                 format: binary
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /greeting-message:
@@ -1186,18 +1186,18 @@ paths:
       summary: 挨拶メッセージ取得
       description: 挨拶メッセージ（固定1種類）を取得する。
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GreetingMessage'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/GreetingMessage"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -1211,22 +1211,22 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/GreetingMessageUpdateRequest'
+              $ref: "#/components/schemas/GreetingMessageUpdateRequest"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GreetingMessage'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/GreetingMessage"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /rich-menu:
@@ -1237,18 +1237,18 @@ paths:
       summary: リッチメニュー取得
       description: リッチメニュー（固定1種類）を取得する。
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RichMenu'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/RichMenu"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -1262,37 +1262,25 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RichMenuUpdateRequest'
+              $ref: "#/components/schemas/RichMenuUpdateRequest"
             encoding:
               actions:
                 contentType: application/json
-            examples:
-              update:
-                summary: 更新の例
-                value:
-                  status: enabled
-                  menu_bar_text: "メニュー"
-                  template_id: 3
-                  actions:
-                    - action_type: url
-                      url: "https://example.com"
-                    - action_type: none
-                      url: null
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RichMenu'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/RichMenu"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /auto-response-message:
@@ -1303,18 +1291,18 @@ paths:
       summary: 自動応答メッセージ取得
       description: 自動応答メッセージ（固定1種類）を取得する。
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AutoResponseMessage'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AutoResponseMessage"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -1328,22 +1316,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AutoResponseMessageUpdateRequest'
+              $ref: "#/components/schemas/AutoResponseMessageUpdateRequest"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AutoResponseMessage'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AutoResponseMessage"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /delivery-history:
@@ -1354,8 +1342,8 @@ paths:
       summary: 配信履歴一覧/検索
       description: 配信履歴を一覧で返す。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: delivery_types
           in: query
           required: false
@@ -1364,7 +1352,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/DeliveryType'
+              $ref: "#/components/schemas/DeliveryType"
           description: 配信種別。複数指定可。
         - name: delivery_statuses
           in: query
@@ -1374,7 +1362,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/DeliveryStatus'
+              $ref: "#/components/schemas/DeliveryStatus"
           description: 配信状態。複数指定可。
         - name: accepted_from
           in: query
@@ -1391,20 +1379,20 @@ paths:
             format: date-time
           description: 受付日時の終了（JST）
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeliveryHistoryListResponse'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/DeliveryHistoryListResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /delivery-history/{delivery_history_id}:
@@ -1423,20 +1411,20 @@ paths:
             format: int64
           description: 配信履歴ID
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeliveryHistoryDetail'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/DeliveryHistoryDetail"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /advertisement-codes:
@@ -1447,8 +1435,8 @@ paths:
       summary: 広告コード一覧/検索
       description: 広告コードを検索し、一覧で返す。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: management_ids
           in: query
           required: false
@@ -1496,7 +1484,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/PostbackSetting'
+              $ref: "#/components/schemas/PostbackSetting"
           description: ポストバック設定。複数指定可。
         - name: memo
           in: query
@@ -1505,12 +1493,12 @@ paths:
             type: string
           description: メモの部分一致
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdvertisementCodeListResponse'
+                $ref: "#/components/schemas/AdvertisementCodeListResponse"
               examples:
                 list:
                   summary: 一覧の例
@@ -1540,14 +1528,14 @@ paths:
                     page: 1
                     limit: 100
                     total: 2
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     post:
@@ -1561,14 +1549,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdvertisementCodeCreateRequest'
+              $ref: "#/components/schemas/AdvertisementCodeCreateRequest"
       responses:
-        '201':
+        "201":
           description: 作成成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdvertisementCodeItem'
+                $ref: "#/components/schemas/AdvertisementCodeItem"
               examples:
                 created:
                   summary: 作成成功の例
@@ -1586,14 +1574,14 @@ paths:
                       param_2_name: "sub_id"
                       param_3_name: null
                       friend_id_param_name: "line_friend_id"
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /advertisement-codes/{advertisement_code_id}:
@@ -1616,14 +1604,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdvertisementCodeUpdateRequest'
+              $ref: "#/components/schemas/AdvertisementCodeUpdateRequest"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdvertisementCodeItem'
+                $ref: "#/components/schemas/AdvertisementCodeItem"
               examples:
                 updated:
                   summary: 更新成功の例
@@ -1641,16 +1629,16 @@ paths:
                       param_2_name: "sub_id"
                       param_3_name: "param3"
                       friend_id_param_name: "line_friend_id"
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     delete:
@@ -1668,16 +1656,16 @@ paths:
             format: int64
           description: 広告コードID
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
 
@@ -1689,8 +1677,8 @@ paths:
       summary: ポストバック履歴一覧/検索
       description: ポストバック実行履歴を検索し、一覧で返す。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: advertisement_code
           in: query
           required: false
@@ -1731,12 +1719,12 @@ paths:
             format: date-time
           description: 実行日時の終了（JST）
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostbackHistoryListResponse'
+                $ref: "#/components/schemas/PostbackHistoryListResponse"
               examples:
                 list:
                   summary: 一覧の例
@@ -1751,14 +1739,14 @@ paths:
                     page: 1
                     limit: 100
                     total: 1
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
 
@@ -1770,15 +1758,15 @@ paths:
       summary: 管理者一覧
       description: 管理者を一覧で返す。一般管理者はシステム管理者を含めない。
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminListResponse'
+                $ref: "#/components/schemas/AdminListResponse"
               examples:
                 list:
                   summary: 一覧の例
@@ -1793,12 +1781,12 @@ paths:
                     page: 1
                     limit: 100
                     total: 1
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     post:
@@ -1812,22 +1800,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdminCreateRequest'
+              $ref: "#/components/schemas/AdminCreateRequest"
       responses:
-        '201':
+        "201":
           description: 作成成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminItem'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AdminItem"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
   /admins/{admin_id}:
@@ -1850,24 +1838,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdminUpdateRequest'
+              $ref: "#/components/schemas/AdminUpdateRequest"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminItem'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/AdminItem"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     delete:
@@ -1885,16 +1873,16 @@ paths:
             format: int64
           description: 管理者ID
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
 
@@ -1906,20 +1894,20 @@ paths:
       summary: システム設定取得
       description: システム設定を取得する（単一レコード想定、要確認）。
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SystemSettings'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/SystemSettings"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
     put:
@@ -1933,24 +1921,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SystemSettingsUpdateRequest'
+              $ref: "#/components/schemas/SystemSettingsUpdateRequest"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SystemSettings'
-        '400':
-          $ref: '#/components/responses/ValidationError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '403':
-          $ref: '#/components/responses/ForbiddenError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/SystemSettings"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       security:
         - bearerAuth: []
 
@@ -1968,7 +1956,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             unauthorized:
               summary: 認証エラーの例（仮）
@@ -1982,7 +1970,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             forbidden:
               summary: 権限エラーの例（仮）
@@ -1996,7 +1984,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             not_found:
               summary: 対象なしの例（仮）
@@ -2010,7 +1998,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             internal_error:
               summary: サーバーエラーの例（仮）
@@ -2024,7 +2012,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             validation_error:
               summary: バリデーションエラーの例（仮）
@@ -2041,7 +2029,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             conflict:
               summary: リソース競合の例（仮）
@@ -2085,7 +2073,7 @@ components:
       schema:
         type: array
         items:
-          $ref: '#/components/schemas/FriendStatus'
+          $ref: "#/components/schemas/FriendStatus"
       description: ブロック状態（line_friends.is_blocked / true=blocked / false=normal）。複数指定可。
 
   schemas:
@@ -2141,11 +2129,11 @@ components:
               type: string
               format: date
         summary:
-          $ref: '#/components/schemas/UsageStatsSummary'
+          $ref: "#/components/schemas/UsageStatsSummary"
         items:
           type: array
           items:
-            $ref: '#/components/schemas/UsageStatsItem'
+            $ref: "#/components/schemas/UsageStatsItem"
 
     UsageStatsSummary:
       type: object
@@ -2210,14 +2198,14 @@ components:
 
     FriendListResponse:
       allOf:
-        - $ref: '#/components/schemas/Pagination'
+        - $ref: "#/components/schemas/Pagination"
         - type: object
           required: [items]
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/FriendListItem'
+                $ref: "#/components/schemas/FriendListItem"
 
     FriendListItem:
       type: object
@@ -2263,14 +2251,14 @@ components:
 
     AdminListResponse:
       allOf:
-        - $ref: '#/components/schemas/Pagination'
+        - $ref: "#/components/schemas/Pagination"
         - type: object
           required: [items]
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/AdminItem'
+                $ref: "#/components/schemas/AdminItem"
 
     AdminItem:
       type: object
@@ -2295,7 +2283,7 @@ components:
           type: string
           example: "test"
         role:
-          $ref: '#/components/schemas/AdminRole'
+          $ref: "#/components/schemas/AdminRole"
         memo:
           type: string
           nullable: true
@@ -2319,7 +2307,7 @@ components:
           type: string
           example: "test"
         role:
-          $ref: '#/components/schemas/AdminRole'
+          $ref: "#/components/schemas/AdminRole"
         memo:
           type: string
           nullable: true
@@ -2327,7 +2315,7 @@ components:
 
     AdminUpdateRequest:
       allOf:
-        - $ref: '#/components/schemas/AdminCreateRequest'
+        - $ref: "#/components/schemas/AdminCreateRequest"
 
     LineOfficialAccountListResponse:
       type: object
@@ -2336,7 +2324,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/LineOfficialAccountItem'
+            $ref: "#/components/schemas/LineOfficialAccountItem"
 
     LineOfficialAccountItem:
       type: object
@@ -2377,14 +2365,14 @@ components:
 
     LineAccountListResponse:
       allOf:
-        - $ref: '#/components/schemas/Pagination'
+        - $ref: "#/components/schemas/Pagination"
         - type: object
           required: [items]
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/LineAccountListItem'
+                $ref: "#/components/schemas/LineAccountListItem"
 
     LineAccountListItem:
       type: object
@@ -2407,7 +2395,7 @@ components:
           format: int64
           example: 45
         usage_status:
-          $ref: '#/components/schemas/LineAccountUsageStatus'
+          $ref: "#/components/schemas/LineAccountUsageStatus"
         basic_id:
           type: string
           example: "@213huezt"
@@ -2420,9 +2408,9 @@ components:
           format: int64
           example: 54
         line_guidance_status:
-          $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+          $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
         distribution_target:
-          $ref: '#/components/schemas/LineAccountDistributionTarget'
+          $ref: "#/components/schemas/LineAccountDistributionTarget"
         delivery_limit:
           type: integer
           format: int64
@@ -2436,9 +2424,9 @@ components:
           format: float
           example: 5.0
         liveness_status:
-          $ref: '#/components/schemas/LineAccountLivenessStatus'
+          $ref: "#/components/schemas/LineAccountLivenessStatus"
         webhook_status:
-          $ref: '#/components/schemas/LineAccountWebhookStatus'
+          $ref: "#/components/schemas/LineAccountWebhookStatus"
         ban_at:
           type: string
           format: date-time
@@ -2465,7 +2453,7 @@ components:
           format: int64
           example: 224
         usage_status:
-          $ref: '#/components/schemas/LineAccountUsageStatus'
+          $ref: "#/components/schemas/LineAccountUsageStatus"
         basic_id:
           type: string
           example: "@213huezt"
@@ -2479,9 +2467,9 @@ components:
           description: 平文を返すか要確認（バックエンドと相談）
           example: "ffff86b35fb8144ef1cebbeaa242cde8"
         line_guidance_status:
-          $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+          $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
         distribution_target:
-          $ref: '#/components/schemas/LineAccountDistributionTarget'
+          $ref: "#/components/schemas/LineAccountDistributionTarget"
         system_memo:
           type: string
           maxLength: 1000
@@ -2517,7 +2505,7 @@ components:
         - distribution_target
       properties:
         usage_status:
-          $ref: '#/components/schemas/LineAccountUsageStatus'
+          $ref: "#/components/schemas/LineAccountUsageStatus"
         basic_id:
           type: string
           maxLength: 20
@@ -2531,9 +2519,9 @@ components:
           maxLength: 200
           example: "ffff86b35fb8144ef1cebbeaa242cde8"
         line_guidance_status:
-          $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+          $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
         distribution_target:
-          $ref: '#/components/schemas/LineAccountDistributionTarget'
+          $ref: "#/components/schemas/LineAccountDistributionTarget"
         system_memo:
           type: string
           maxLength: 1000
@@ -2542,7 +2530,7 @@ components:
 
     LineAccountUpdateRequest:
       allOf:
-        - $ref: '#/components/schemas/LineAccountCreateRequest'
+        - $ref: "#/components/schemas/LineAccountCreateRequest"
 
     LineAccountBulkActionRequest:
       type: object
@@ -2557,30 +2545,30 @@ components:
 
     LineAccountBulkUsageStatusRequest:
       allOf:
-        - $ref: '#/components/schemas/LineAccountBulkActionRequest'
+        - $ref: "#/components/schemas/LineAccountBulkActionRequest"
         - type: object
           required: [usage_status]
           properties:
             usage_status:
-              $ref: '#/components/schemas/LineAccountUsageStatus'
+              $ref: "#/components/schemas/LineAccountUsageStatus"
 
     LineAccountBulkLineGuidanceRequest:
       allOf:
-        - $ref: '#/components/schemas/LineAccountBulkActionRequest'
+        - $ref: "#/components/schemas/LineAccountBulkActionRequest"
         - type: object
           required: [line_guidance_status]
           properties:
             line_guidance_status:
-              $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
+              $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
 
     LineAccountBulkDistributionTargetRequest:
       allOf:
-        - $ref: '#/components/schemas/LineAccountBulkActionRequest'
+        - $ref: "#/components/schemas/LineAccountBulkActionRequest"
         - type: object
           required: [distribution_target]
           properties:
             distribution_target:
-              $ref: '#/components/schemas/LineAccountDistributionTarget'
+              $ref: "#/components/schemas/LineAccountDistributionTarget"
 
     LineAccountBulkActionItemStatus:
       type: string
@@ -2595,7 +2583,7 @@ components:
           format: int64
           example: 35
         status:
-          $ref: '#/components/schemas/LineAccountBulkActionItemStatus'
+          $ref: "#/components/schemas/LineAccountBulkActionItemStatus"
         message:
           type: string
           nullable: true
@@ -2624,7 +2612,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/LineAccountBulkActionItem'
+            $ref: "#/components/schemas/LineAccountBulkActionItem"
 
     LineAccountLinkageCheckResponse:
       type: object
@@ -2635,7 +2623,7 @@ components:
           format: int64
           example: 224
         status:
-          $ref: '#/components/schemas/LineAccountBulkActionItemStatus'
+          $ref: "#/components/schemas/LineAccountBulkActionItemStatus"
         message:
           type: string
           nullable: true
@@ -2668,7 +2656,7 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/LineAccountCsvImportError'
+            $ref: "#/components/schemas/LineAccountCsvImportError"
 
     GreetingMessageSendTiming:
       type: string
@@ -2685,7 +2673,7 @@ components:
         - notice_link_url
       properties:
         send_timing:
-          $ref: '#/components/schemas/GreetingMessageSendTiming'
+          $ref: "#/components/schemas/GreetingMessageSendTiming"
         icon_image_url:
           type: string
           nullable: true
@@ -2721,7 +2709,7 @@ components:
         - notice_link_url
       properties:
         send_timing:
-          $ref: '#/components/schemas/GreetingMessageSendTiming'
+          $ref: "#/components/schemas/GreetingMessageSendTiming"
         icon_image:
           type: string
           format: binary
@@ -2760,12 +2748,10 @@ components:
       required: [action_type]
       properties:
         action_type:
-          $ref: '#/components/schemas/RichMenuActionType'
+          $ref: "#/components/schemas/RichMenuActionType"
         url:
           type: string
           nullable: true
-          description: action_type=url のとき必須。action_type=none の場合は null または未指定。
-          format: uri
           maxLength: 1000
           example: "https://example.com"
 
@@ -2779,7 +2765,7 @@ components:
         - actions
       properties:
         status:
-          $ref: '#/components/schemas/RichMenuStatus'
+          $ref: "#/components/schemas/RichMenuStatus"
         menu_bar_text:
           type: string
           maxLength: 14
@@ -2798,7 +2784,7 @@ components:
           description: template_id により必要な枠数が異なる（要確認）
           maxItems: 6
           items:
-            $ref: '#/components/schemas/RichMenuAction'
+            $ref: "#/components/schemas/RichMenuAction"
 
     RichMenuUpdateRequest:
       type: object
@@ -2810,7 +2796,7 @@ components:
         - actions
       properties:
         status:
-          $ref: '#/components/schemas/RichMenuStatus'
+          $ref: "#/components/schemas/RichMenuStatus"
         menu_bar_text:
           type: string
           maxLength: 14
@@ -2825,15 +2811,10 @@ components:
           maximum: 10
         actions:
           type: array
-          description: アクション設定（URL指定/使用しない）。template_id により必要な枠数が異なる（要確認）。URLにシステム置換文字は使用できません。
+          description: アクション設定（URL指定/使用しない）。template_id により必要な枠数が異なる（要確認）。URLにシステム置換文字は使用しない。
           maxItems: 6
           items:
-            $ref: '#/components/schemas/RichMenuAction'
-          example:
-            - action_type: url
-              url: "https://example.com"
-            - action_type: none
-              url: null
+            $ref: "#/components/schemas/RichMenuAction"
 
     AutoResponseMessageSendStatus:
       type: string
@@ -2849,7 +2830,7 @@ components:
         - button_link_url
       properties:
         send_status:
-          $ref: '#/components/schemas/AutoResponseMessageSendStatus'
+          $ref: "#/components/schemas/AutoResponseMessageSendStatus"
         message_text:
           type: string
           example: "お問い合わせありがとうございます。"
@@ -2871,7 +2852,7 @@ components:
         - button_link_url
       properties:
         send_status:
-          $ref: '#/components/schemas/AutoResponseMessageSendStatus'
+          $ref: "#/components/schemas/AutoResponseMessageSendStatus"
         message_text:
           type: string
         button_label:
@@ -2893,14 +2874,14 @@ components:
 
     DeliveryHistoryListResponse:
       allOf:
-        - $ref: '#/components/schemas/Pagination'
+        - $ref: "#/components/schemas/Pagination"
         - type: object
           required: [items]
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/DeliveryHistoryItem'
+                $ref: "#/components/schemas/DeliveryHistoryItem"
 
     DeliveryHistoryItem:
       type: object
@@ -2916,9 +2897,9 @@ components:
           format: int64
           example: 4556
         delivery_type:
-          $ref: '#/components/schemas/DeliveryType'
+          $ref: "#/components/schemas/DeliveryType"
         delivery_status:
-          $ref: '#/components/schemas/DeliveryStatus'
+          $ref: "#/components/schemas/DeliveryStatus"
         accepted_count:
           type: integer
           format: int64
@@ -2946,7 +2927,7 @@ components:
 
     DeliveryHistoryDetail:
       allOf:
-        - $ref: '#/components/schemas/DeliveryHistoryItem'
+        - $ref: "#/components/schemas/DeliveryHistoryItem"
         - type: object
           required: [json_data]
           properties:
@@ -3083,31 +3064,31 @@ components:
           description: 広告名（30文字まで）
           example: "ああああ"
         postback_setting:
-          $ref: '#/components/schemas/PostbackSetting'
+          $ref: "#/components/schemas/PostbackSetting"
         memo:
           type: string
           maxLength: 1000
           nullable: true
         custom_settings:
           allOf:
-            - $ref: '#/components/schemas/AdvertisementCodeCustomSettings'
+            - $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
           nullable: true
       description: postback_setting=custom の場合は custom_settings が必須
 
     AdvertisementCodeUpdateRequest:
       allOf:
-        - $ref: '#/components/schemas/AdvertisementCodeCreateRequest'
+        - $ref: "#/components/schemas/AdvertisementCodeCreateRequest"
 
     AdvertisementCodeListResponse:
       allOf:
-        - $ref: '#/components/schemas/Pagination'
+        - $ref: "#/components/schemas/Pagination"
         - type: object
           required: [items]
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/AdvertisementCodeItem'
+                $ref: "#/components/schemas/AdvertisementCodeItem"
 
     AdvertisementCodeItem:
       type: object
@@ -3138,7 +3119,7 @@ components:
           maxLength: 30
           example: "ああああ"
         postback_setting:
-          $ref: '#/components/schemas/PostbackSetting'
+          $ref: "#/components/schemas/PostbackSetting"
         friend_add_url:
           type: string
           format: uri
@@ -3149,18 +3130,18 @@ components:
           maxLength: 1000
           nullable: true
         custom_settings:
-          $ref: '#/components/schemas/AdvertisementCodeCustomSettings'
+          $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
 
     PostbackHistoryListResponse:
       allOf:
-        - $ref: '#/components/schemas/Pagination'
+        - $ref: "#/components/schemas/Pagination"
         - type: object
           required: [items]
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/PostbackHistoryItem'
+                $ref: "#/components/schemas/PostbackHistoryItem"
 
     PostbackHistoryItem:
       type: object
@@ -3187,7 +3168,7 @@ components:
           format: int64
           example: 545
         postback_setting:
-          $ref: '#/components/schemas/PostbackSetting'
+          $ref: "#/components/schemas/PostbackSetting"
         execution_url:
           type: string
           example: "https://ads.example.com/track?af=18ag1&member_id=545"
@@ -3197,7 +3178,7 @@ components:
       required: [error]
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
 
     Error:
       type: object
@@ -3212,7 +3193,7 @@ components:
         details:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorDetail'
+            $ref: "#/components/schemas/ErrorDetail"
         trace_id:
           type: string
           format: uuid
