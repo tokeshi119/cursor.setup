@@ -1,11 +1,12 @@
 # API設計: 利用集計（月別/日別/時間別）
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: 利用集計（月別/日別/時間別）
 
 ### 表示データ
-- period_label（string）: 年月 / 日 / 時間の表示ラベル
+- label（string）: 年月 / 日 / 時間の表示ラベル
+- period_start（date）: 集計対象期間の開始日
 - friend_registrations（integer）: 新規友だち追加数
 - push_deliveries（integer）: push配信数
 - reply_deliveries（integer）: reply配信数

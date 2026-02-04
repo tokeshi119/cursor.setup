@@ -1,11 +1,11 @@
 # API設計: リッチメニュー
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: リッチメニュー
 
 ### 表示データ
-- status（string）: 適用ステータス（applied/released）
+- status（string）: 適用ステータス（enabled/disabled）
 - menu_bar_text（string）: メニューバー表示（14文字まで）
 - image_url（string）: 画像URL
 - template_id（integer）: テンプレート（1〜10）
@@ -14,7 +14,7 @@ Last updated: 2026-02-02
   - url（string）: URL（url指定時のみ）
 
 ### 入力データ
-- status（必須, applied/released）
+- status（必須, enabled/disabled）
 - menu_bar_text（必須, 14文字まで）
 - image（必須, JPEG/PNG）
 - template_id（必須, 1〜10）
@@ -47,7 +47,7 @@ Last updated: 2026-02-02
 ### PUT /api/v1/rich-menu
 
 #### リクエストボディ（multipart/form-data）
-- status（必須）: applied / released
+- status（必須）: enabled / disabled
 - menu_bar_text（必須, 14文字まで）
 - image（必須）: JPEG/PNG
 - template_id（必須）: 1〜10
@@ -78,7 +78,7 @@ Last updated: 2026-02-02
 
 ```json
 {
-  "status": "applied",
+  "status": "enabled",
   "menu_bar_text": "メニュー",
   "image_url": "https://cdn.example.com/line/rich-menu.png",
   "template_id": 3,

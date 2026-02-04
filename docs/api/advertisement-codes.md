@@ -1,6 +1,6 @@
 # API設計: 広告コード一覧/検索/新規/編集
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: 広告コード一覧/検索/新規/編集
 
@@ -12,7 +12,7 @@ Last updated: 2026-02-02
 - postback_setting（string）: ポストバック設定（none/custom/google/meta/tiktok/line）
 - friend_add_url（string）: 友だち追加URL（自動生成, 要確認）
 - memo（string）: メモ
-- custom_settings（object）: custom時の設定（postback URL, パラメータ名 最大3つ）
+- custom_settings（object）: custom時の設定（詳細取得のみ。一覧では返却しない）
 
 ### ユーザー操作
 - 検索実行
@@ -30,6 +30,7 @@ Last updated: 2026-02-02
 |---------|------|------|
 | GET | /api/v1/advertisement-codes | 広告コード一覧/検索 |
 | POST | /api/v1/advertisement-codes | 広告コード作成 |
+| GET | /api/v1/advertisement-codes/{advertisement_code_id} | 広告コード詳細 |
 | PUT | /api/v1/advertisement-codes/{advertisement_code_id} | 広告コード更新 |
 | DELETE | /api/v1/advertisement-codes/{advertisement_code_id} | 広告コード削除（物理） |
 
@@ -97,6 +98,14 @@ memo:
 - 広告コード検索は部分一致（複数はOR）
 - 並び順は作成日時の降順固定
 
+### GET /api/v1/advertisement-codes/{advertisement_code_id}
+
+#### パスパラメータ
+advertisement_code_id:
+  type: integer (int64)
+  required: true
+  description: 広告コードID
+
 ### POST /api/v1/advertisement-codes
 
 #### リクエストボディ
@@ -111,7 +120,6 @@ memo:
 
 #### 補足
 - conversion_code は自動生成（LCO + 7桁, 10文字）
-- custom以外の広告コードは10桁固定（CAPI仕様）
 
 ### PUT /api/v1/advertisement-codes/{advertisement_code_id}
 
@@ -146,19 +154,32 @@ POSTと同じ
       "name": "ああああ",
       "postback_setting": "custom",
       "friend_add_url": "https://li-connector2.com/ad/?afl=18ag1",
-      "memo": null,
-      "custom_settings": {
-        "postback_url": "https://example.com/postback",
-        "param_1_name": "click_id",
-        "param_2_name": "sub_id",
-        "param_3_name": null,
-        "friend_id_param_name": "line_friend_id"
-      }
+      "memo": null
     }
   ],
   "page": 1,
   "limit": 100,
   "total": 1
+}
+```
+
+### GET /api/v1/advertisement-codes/{advertisement_code_id}
+
+```json
+{
+  "id": 545,
+  "advertisement_code": "18ag1",
+  "conversion_code": "LCO1234567",
+  "name": "ああああ",
+  "postback_setting": "custom",
+  "friend_add_url": "https://li-connector2.com/ad/?afl=18ag1",
+  "memo": null,
+  "custom_settings": {
+    "postback_url": "https://example.com/postback",
+    "param_1_name": "param_1",
+    "param_2_name": "param_2",
+    "friend_id_param_name": "line_friend_id"
+  }
 }
 ```
 

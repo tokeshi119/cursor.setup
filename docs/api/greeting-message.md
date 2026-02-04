@@ -1,11 +1,11 @@
 # API設計: 挨拶メッセージ
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: 挨拶メッセージ
 
 ### 表示データ
-- send_timing（string）: 送信タイミング（friend_added / unblocked）
+- send_timing（string）: 送信タイミング（greet / unblock）
 - icon_image_url（string）: LINEアイコン画像URL
 - notice_image_url（string）: 通知用画像URL
 - notice_title（string）: 通知用タイトル
@@ -47,7 +47,7 @@ Last updated: 2026-02-02
 ### PUT /api/v1/greeting-message
 
 #### リクエストボディ（multipart/form-data）
-- send_timing（必須）: friend_added / unblocked
+- send_timing（必須）: greet / unblock
 - icon_image（任意）: JPEG/PNG
 - notice_image（任意）: JPEG/PNG
 - notice_title（必須, 40文字以内）
@@ -66,7 +66,7 @@ Last updated: 2026-02-02
 
 ```json
 {
-  "send_timing": "friend_added",
+  "send_timing": "greet",
   "icon_image_url": "https://cdn.example.com/line/icon.png",
   "notice_image_url": "https://cdn.example.com/line/notice.png",
   "notice_title": "ようこそ",

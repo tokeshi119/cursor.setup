@@ -1,22 +1,22 @@
 # API設計: LINE設定（一覧/検索/新規/編集/CSV/一括操作）
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: LINE設定
 
 ### 表示データ（一覧）
 - id（integer）: 管理ID
-- usage_status（string）: 使用状況（使用中/未使用/無効）
+- usage_status（string）: 使用状況（active/inactive）
 - basic_id（string）: ベーシックID（@から始まるID）
 - friend_count_total（integer）: 友だち数（合計）
 - friend_count_non_blocked（integer）: 友だち数（非ブロック）
-- line_guidance_status（string）: 別LINE誘導（ON/OFF）
-- distribution_target（string）: 振り分け先（対象/除外）
+- line_guidance_status（string）: 別LINE誘導（on/off）
+- distribution_target（string）: 振り分け先（target/no-target）
 - delivery_limit（integer）: 配信数上限
 - current_month_delivery_count（integer）: 当月配信数
 - delivery_consumption_rate（number）: 配信消化率（%）
-- liveness_status（string）: 生存状況（正常/BAN）
-- webhook_status（string）: webhook（OK/Error）
+- liveness_status（string）: 配信状態（ok/ng/error）
+- webhook_status（string）: webhookの状態（ok/ng/error）
 - ban_at（datetime）: BAN発生日
 - system_memo_masked（string）: システムメモ（一覧ではマスク表示）
 
@@ -83,10 +83,9 @@ Last updated: 2026-02-02
 - 検索条件の対象範囲（どの項目をサーバー側検索に含めるか）
 - 友だち数/配信数/消化率など集計系の検索条件の可否
 
-#### 暫定（最小条件のみ）
-- 管理ID（management_ids）
-- 使用状況（usage_statuses）
-- ベーシックID（basic_id）
+#### 要相談（実装範囲）
+- 最小: management_ids / usage_statuses / basic_id
+- 追加フィルタは段階導入（OpenAPI上は定義済み）
 
 #### クエリパラメータ
 
@@ -118,7 +117,7 @@ exclude_management_ids:
 
 usage_statuses:
   type: array
-  items: string (in_use/unused/disabled)
+  items: string (active/inactive)
   required: false
   description: 使用状況。複数指定可。
 
@@ -150,7 +149,7 @@ line_guidance_statuses:
 
 distribution_targets:
   type: array
-  items: string (target/excluded)
+  items: string (target/no-target)
   required: false
   description: 振り分け先。複数指定可。
 
@@ -186,13 +185,13 @@ delivery_consumption_rate_max:
 
 liveness_statuses:
   type: array
-  items: string (normal/banned)
+  items: string (ok/ng/error)
   required: false
   description: 生存状況。複数指定可。
 
 webhook_statuses:
   type: array
-  items: string (ok/error)
+  items: string (ok/ng/error)
   required: false
   description: webhookの状態。複数指定可。
 
@@ -262,13 +261,13 @@ line_account_id:
 - 文字コード: UTF-8
 - 1行目: ヘッダーとして読み飛ばし
 - カンマ区切り
-- 列定義:
-  - A列: 状態（0=無効, 1=使用中, 2=未使用）
+- 列定義（概要。ヘッダー/表記は csv-format を正とする）:
+  - A列: 状態（active/inactive）
   - B列: ベーシックID（20文字以内, 半角英数字）※要確認
   - C列: ChannelID（200文字以内, 半角英数字）※要確認
   - D列: Channel secret（200文字以内, 半角英数字）※要確認
-  - E列: 別LINE誘導（0=無効, 1=OFF）
-  - F列: 振り分け先（0=除外, 1=対象）
+  - E列: 別LINE誘導（on/off）
+  - F列: 振り分け先（target/no-target）
   - G列: システムメモ（1000文字以内）
 
 ## 4. レスポンス構造サンプル
@@ -280,16 +279,16 @@ line_account_id:
   "items": [
     {
       "id": 45,
-      "usage_status": "in_use",
+      "usage_status": "active",
       "basic_id": "@213huezt",
       "friend_count_total": 125,
       "friend_count_non_blocked": 54,
       "line_guidance_status": "on",
-      "distribution_target": "excluded",
+      "distribution_target": "target",
       "delivery_limit": 500,
       "current_month_delivery_count": 25,
       "delivery_consumption_rate": 5.0,
-      "liveness_status": "normal",
+      "liveness_status": "ok",
       "webhook_status": "ok",
       "ban_at": null,
       "system_memo_masked": "******"
@@ -306,15 +305,15 @@ line_account_id:
 ```json
 {
   "id": 224,
-  "usage_status": "unused",
+  "usage_status": "inactive",
   "basic_id": "@213huezt",
   "channel_id": "2007592653",
-  "channel_secret": "ffff86b35fb8144ef1cebbeaa242cde8",
+  "channel_secret": "****cde8",
   "line_guidance_status": "off",
   "distribution_target": "target",
   "system_memo": null,
-  "access_token_expires_at": "2025-09-18T02:00:02+09:00",
-  "access_token": "xxxxx",
+  "access_token_expires_at": "2026-09-18T02:00:02+09:00",
+  "access_token": "****",
   "redirect_url": "https://line.me/R/ti/p/%40l23huezt",
   "webhook_url": "https://muteking.com/api/linebot/"
 }

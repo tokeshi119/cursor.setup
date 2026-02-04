@@ -1,6 +1,6 @@
 # API設計: ポストバック履歴
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: ポストバック履歴
 
@@ -92,7 +92,7 @@ executed_to:
       "conversion_code": "LCO1234567",
       "line_friend_id": 545,
       "postback_setting": "google",
-      "execution_url": "https://ads.example.com/track?af=18ag1&member_id=545"
+      "execution_url": "https://ads.example.com/track?af=18ag1&line_friend_id=545"
     }
   ],
   "page": 1,

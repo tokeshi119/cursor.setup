@@ -1,6 +1,6 @@
 # API設計: 友だち一覧/検索
 
-Last updated: 2026-02-02
+Last updated: 2026-02-04
 
 ## 1. 画面要件分析: 友だち一覧/検索
 
@@ -9,7 +9,7 @@ Last updated: 2026-02-02
 - management_code（string）: 管理コード（incode）※要確認
 - advertisement_code（string）: 広告コード（advertisement_codes.advertisement_code）
 - line_id（string）: LINE_ID（line_friends.messaging_api_user_id）
-- registered_at（datetime）: 友だち登録日時（line_friends.created_at）
+- created_at（datetime）: 友だち登録日時（line_friends.created_at）
 - is_blocked（boolean）: 友だち状態（ブロック判定）
 - line_official_account_id（integer）: LINE連携ID
 - line_official_basic_id（string）: LINE連携 basic_id
@@ -90,21 +90,21 @@ line_id:
   required: false
   description: LINE_IDの部分一致
 
-registered_from:
+created_from:
   type: string
   required: false
   description: 登録日時の開始（JST, ISO 8601）
 
-registered_to:
+created_to:
   type: string
   required: false
   description: 登録日時の終了（JST, ISO 8601）
 
 friend_statuses:
   type: array
-  items: string (normal | blocked)
+  items: boolean
   required: false
-  description: 友だち状態（正常/ブロック）。複数指定可。
+  description: ブロック状態（true=blocked / false=normal）。複数指定可。
 
 line_official_basic_ids:
   type: array
@@ -149,7 +149,7 @@ friend_id:
       "management_code": null,
       "advertisement_code": "yokota_x",
       "line_id": "U11ae9eba73ac607c52138ed61bc0183a",
-      "registered_at": "2026-04-01T10:57:00+09:00",
+      "created_at": "2026-04-01T10:57:00+09:00",
       "is_blocked": true,
       "line_official_account_id": 1,
       "line_official_basic_id": "@937jhhcx"
