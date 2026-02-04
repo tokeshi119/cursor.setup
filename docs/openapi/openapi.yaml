@@ -3097,6 +3097,10 @@ components:
         - LPROの {+member_id+} は非対応で {+line_friend_id+} を使用（要確認）
         - additionalProperties: true の扱い（未知キー許容/無視/エラー）要確認
         - param_1_name〜param_3_name は任意（未指定可）
+        - postback_url と friend_id_param_name は必須（要確認）
+      required:
+        - postback_url
+        - friend_id_param_name
       properties:
         postback_url:
           type: string
@@ -3116,6 +3120,12 @@ components:
       additionalProperties: true
 
     AdvertisementCodeCreateRequest:
+      oneOf:
+        - $ref: "#/components/schemas/AdvertisementCodeCreateRequestCustom"
+        - $ref: "#/components/schemas/AdvertisementCodeCreateRequestNonCustom"
+      description: 広告コード作成リクエスト（custom / non-custom で条件分岐）
+
+    AdvertisementCodeBaseRequest:
       type: object
       required:
         - advertisement_code
@@ -3138,17 +3148,43 @@ components:
           type: string
           maxLength: 1000
           nullable: true
-        custom_settings:
-          allOf:
-            - $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
-          nullable: true
+
+    AdvertisementCodeCreateRequestCustom:
+      allOf:
+        - $ref: "#/components/schemas/AdvertisementCodeBaseRequest"
+        - type: object
+          required:
+            - custom_settings
+          properties:
+            postback_setting:
+              type: string
+              enum: [custom]
+            custom_settings:
+              allOf:
+                - $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
       description: |
         postback_setting=custom の場合は custom_settings が必須（欠落時の 400 可否は要確認）
+
+    AdvertisementCodeCreateRequestNonCustom:
+      allOf:
+        - $ref: "#/components/schemas/AdvertisementCodeBaseRequest"
+        - type: object
+          properties:
+            postback_setting:
+              type: string
+              enum: [none, google, meta, tiktok, line]
+            custom_settings:
+              allOf:
+                - $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
+              nullable: true
+      description: |
         non-custom の場合は custom_settings は null もしくは未送信（要確認）
 
     AdvertisementCodeUpdateRequest:
-      allOf:
-        - $ref: "#/components/schemas/AdvertisementCodeCreateRequest"
+      oneOf:
+        - $ref: "#/components/schemas/AdvertisementCodeCreateRequestCustom"
+        - $ref: "#/components/schemas/AdvertisementCodeCreateRequestNonCustom"
+      description: 広告コード更新リクエスト（custom / non-custom で条件分岐）
 
     AdvertisementCodeListResponse:
       allOf:
