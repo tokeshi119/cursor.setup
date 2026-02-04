@@ -2464,8 +2464,8 @@ components:
         channel_secret:
           type: string
           maxLength: 200
-          description: 平文を返すか要確認（バックエンドと相談）
-          example: "ffff86b35fb8144ef1cebbeaa242cde8"
+          description: マスクのみ返す想定（要確認）
+          example: "****cde8"
         line_guidance_status:
           $ref: "#/components/schemas/LineAccountLineGuidanceStatus"
         distribution_target:
@@ -2483,8 +2483,8 @@ components:
         access_token:
           type: string
           nullable: true
-          description: 平文を返すか要確認（バックエンドと相談）
-          example: "xxxxx"
+          description: マスクのみ返す想定（要確認）
+          example: "****"
         redirect_url:
           type: string
           nullable: true
