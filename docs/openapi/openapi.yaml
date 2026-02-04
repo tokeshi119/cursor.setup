@@ -305,6 +305,7 @@ paths:
               examples:
                 list:
                   summary: 一覧の例
+                  description: custom_settings は custom のときのみ。non-custom は null もしくは未返却（要確認）
                   value:
                     items:
                       - id: 545
@@ -1560,6 +1561,7 @@ paths:
               examples:
                 created:
                   summary: 作成成功の例
+                  description: postback_setting=custom の場合の例。custom_settings 必須（要確認）
                   value:
                     id: 545
                     advertisement_code: "18ag1"
@@ -1615,6 +1617,7 @@ paths:
               examples:
                 updated:
                   summary: 更新成功の例
+                  description: postback_setting=custom の場合の例。custom_settings 必須（要確認）
                   value:
                     id: 545
                     advertisement_code: "18ag1"
@@ -2752,6 +2755,8 @@ components:
         url:
           type: string
           nullable: true
+          description: action_type=url のとき必須。action_type=none の場合は null または未指定。
+          format: uri
           maxLength: 1000
           example: "https://example.com"
 
@@ -2781,7 +2786,7 @@ components:
           example: 3
         actions:
           type: array
-          description: template_id により必要な枠数が異なる（要確認）
+          description: テンプレートは10種類想定（template_id=1-10）（仮）。必要枠数はテンプレートにより異なる（仮）。
           maxItems: 6
           items:
             $ref: "#/components/schemas/RichMenuAction"
@@ -2811,7 +2816,7 @@ components:
           maximum: 10
         actions:
           type: array
-          description: アクション設定（URL指定/使用しない）。template_id により必要な枠数が異なる（要確認）。URLにシステム置換文字は使用しない。
+          description: アクション設定（URL指定/使用しない）。テンプレートは10種類想定（template_id=1-10）（仮）。必要枠数はテンプレートにより異なる（仮）。URLにシステム置換文字は使用しない。
           maxItems: 6
           items:
             $ref: "#/components/schemas/RichMenuAction"
@@ -3027,11 +3032,17 @@ components:
     PostbackSetting:
       type: string
       enum: [none, custom, google, meta, tiktok, line]
-      description: ポストバック設定
+      description: |
+        ポストバック設定
+        - custom の場合は custom_settings 必須（要確認）
+        - non-custom の場合は custom_settings は null もしくは未送信（要確認）
 
     AdvertisementCodeCustomSettings:
       type: object
-      description: custom時の設定。置換タグ {+afn+}, {+afn2+}, {+line_friend_id+} を利用（要確認）
+      description: |
+        custom時の設定。置換タグ {+afn+}, {+afn2+}, {+line_friend_id+} を利用（要確認）
+        - LPROの {+member_id+} は非対応で {+line_friend_id+} を使用（要確認）
+        - additionalProperties: true の扱い（未知キー許容/無視/エラー）要確認
       properties:
         postback_url:
           type: string
@@ -3073,7 +3084,9 @@ components:
           allOf:
             - $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
           nullable: true
-      description: postback_setting=custom の場合は custom_settings が必須
+      description: |
+        postback_setting=custom の場合は custom_settings が必須（欠落時の 400 可否は要確認）
+        non-custom の場合は custom_settings は null もしくは未送信（要確認）
 
     AdvertisementCodeUpdateRequest:
       allOf:
@@ -3130,7 +3143,12 @@ components:
           maxLength: 1000
           nullable: true
         custom_settings:
-          $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
+          allOf:
+            - $ref: "#/components/schemas/AdvertisementCodeCustomSettings"
+          nullable: true
+          description: |
+            postback_setting=custom の場合のみ返却（要確認）
+            non-custom の場合は null もしくは未返却（要確認）
 
     PostbackHistoryListResponse:
       allOf:
