@@ -1567,7 +1567,6 @@ paths:
                       postback_url: "https://example.com/postback"
                       param_1_name: "param_1"
                       param_2_name: "param_2"
-                      param_3_name: null
                       friend_id_param_name: "line_friend_id"
         "400":
           $ref: "#/components/responses/ValidationError"
@@ -1616,7 +1615,6 @@ paths:
                       postback_url: "https://example.com/postback"
                       param_1_name: "param_1"
                       param_2_name: "param_2"
-                      param_3_name: null
                       friend_id_param_name: "line_friend_id"
                 detail_non_custom:
                   summary: 詳細の例（non-custom）
@@ -1791,7 +1789,7 @@ paths:
                         conversion_code: "LCO1234567"
                         line_friend_id: 545
                         postback_setting: google
-                        execution_url: "https://ads.example.com/track?af=18ag1&member_id=545"
+                        execution_url: "https://ads.example.com/track?af=18ag1&line_friend_id=545"
                     page: 1
                     limit: 100
                     total: 1
@@ -3097,6 +3095,7 @@ components:
         - LPROの {+member_id+} は非対応で {+line_friend_id+} を使用（要確認）
         - additionalProperties: true の扱い（未知キー許容/無視/エラー）要確認
         - param_1_name〜param_3_name は任意（未指定可）
+        - 未指定の場合は未送信（nullではなく省略）想定（要確認）
         - postback_url と friend_id_param_name は必須（要確認）
       required:
         - postback_url
@@ -3323,7 +3322,7 @@ components:
           $ref: "#/components/schemas/PostbackSetting"
         execution_url:
           type: string
-          example: "https://ads.example.com/track?af=18ag1&member_id=545"
+          example: "https://ads.example.com/track?af=18ag1&line_friend_id=545"
 
     ErrorResponse:
       type: object
