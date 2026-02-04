@@ -2,7 +2,15 @@ openapi: 3.0.3
 info:
   title: LINE Connector 2 API
   version: 0.1.0
-  description: フロントエンド主導でAPI設計したドラフトOpenAPI。API共通規約は docs/api/conventions.md を参照。
+  description: |
+    フロントエンド主導でAPI設計したドラフトOpenAPI。
+
+    ## 共通仕様（暫定）
+    - ベースパス: `/api/v1`
+    - 認証: `Authorization: Bearer {token}`
+    - 命名: JSONプロパティは `snake_case`
+    - ページング: `page` / `limit`
+    - エラーレスポンス: `#/components/schemas/ErrorResponse`
   x-updated: 2026-02-04
 
 tags:
@@ -392,7 +400,7 @@ paths:
         - LineAccounts
       operationId: listLineAccounts
       summary: LINE設定一覧/検索
-      description: LINE設定を検索し、一覧で返す（検索条件の対象範囲は要相談。暫定は management_ids/usage_statuses/basic_id のみ）。
+      description: LINE設定を検索し、一覧で返す（検索条件はクエリパラメータ定義を参照。最終調整はバックエンドレビューで実施）。
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/LimitParam"
@@ -1537,7 +1545,7 @@ paths:
         - AdvertisementCodes
       operationId: createAdvertisementCode
       summary: 広告コード作成
-      description: 広告コードを新規作成し、conversion_code を自動生成する。
+      description: 広告コードを新規作成し、conversion_code を自動生成する。advertisement_code が既に存在する場合は 409（要確認）。
       requestBody:
         required: true
         content:
@@ -1574,6 +1582,8 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "403":
           $ref: "#/components/responses/ForbiddenError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -1643,7 +1653,7 @@ paths:
         - AdvertisementCodes
       operationId: updateAdvertisementCode
       summary: 広告コード更新
-      description: 広告コードを更新する（全項目）。
+      description: 広告コードを更新する（全項目）。advertisement_code の変更先が既に存在する場合は 409（要確認）。
       parameters:
         - name: advertisement_code_id
           in: path
@@ -1691,6 +1701,8 @@ paths:
           $ref: "#/components/responses/ForbiddenError"
         "404":
           $ref: "#/components/responses/NotFoundError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -1848,7 +1860,7 @@ paths:
         - Admins
       operationId: createAdmin
       summary: 管理者作成
-      description: 管理者を作成する。cognito_sub はサーバー側で設定する。
+      description: 管理者を作成する。cognito_sub はサーバー側で設定する。login_id が既に存在する場合は 409（要確認）。
       requestBody:
         required: true
         content:
@@ -1868,6 +1880,8 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "403":
           $ref: "#/components/responses/ForbiddenError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -1878,7 +1892,7 @@ paths:
         - Admins
       operationId: updateAdmin
       summary: 管理者更新
-      description: 管理者を更新する（全項目）。
+      description: 管理者を更新する（全項目）。login_id の変更先が既に存在する場合は 409（要確認）。
       parameters:
         - name: admin_id
           in: path
@@ -1908,6 +1922,8 @@ paths:
           $ref: "#/components/responses/ForbiddenError"
         "404":
           $ref: "#/components/responses/NotFoundError"
+        "409":
+          $ref: "#/components/responses/ConflictError"
         "500":
           $ref: "#/components/responses/InternalServerError"
       security:
@@ -2541,10 +2557,12 @@ components:
           example: "****"
         redirect_url:
           type: string
+          format: uri
           nullable: true
           example: "https://line.me/R/ti/p/%40l23huezt"
         webhook_url:
           type: string
+          format: uri
           nullable: true
           example: "https://muteking.com/api/linebot/"
 
@@ -2592,6 +2610,7 @@ components:
       properties:
         line_account_ids:
           type: array
+          minItems: 1
           items:
             type: integer
             format: int64
@@ -2730,10 +2749,12 @@ components:
           $ref: "#/components/schemas/GreetingMessageSendTiming"
         icon_image_url:
           type: string
+          format: uri
           nullable: true
           example: "https://cdn.example.com/line/icon.png"
         notice_image_url:
           type: string
+          format: uri
           nullable: true
           example: "https://cdn.example.com/line/notice.png"
         notice_title:
@@ -2750,6 +2771,7 @@ components:
           example: "開く"
         notice_link_url:
           type: string
+          format: uri
           maxLength: 1000
           example: "https://example.com/welcome"
 
@@ -2785,6 +2807,7 @@ components:
           maxLength: 10
         notice_link_url:
           type: string
+          format: uri
           maxLength: 1000
 
     RichMenuStatus:
@@ -2828,6 +2851,7 @@ components:
           example: "メニュー"
         image_url:
           type: string
+          format: uri
           example: "https://cdn.example.com/line/rich-menu.png"
         template_id:
           type: integer
@@ -2896,6 +2920,7 @@ components:
           example: "詳細を見る"
         button_link_url:
           type: string
+          format: uri
           maxLength: 1000
           example: "https://example.com/help"
 
@@ -2916,6 +2941,7 @@ components:
           maxLength: 10
         button_link_url:
           type: string
+          format: uri
           maxLength: 1000
 
     DeliveryType:
