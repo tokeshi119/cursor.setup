@@ -1502,7 +1502,7 @@ paths:
               examples:
                 list:
                   summary: 一覧の例
-                  description: custom_settings は custom のときのみ。non-custom は null もしくは未返却（要確認）
+                  description: 一覧では custom_settings は返却しない（編集画面は詳細取得APIを使用）
                   value:
                     items:
                       - id: 545
@@ -1512,12 +1512,6 @@ paths:
                         postback_setting: custom
                         friend_add_url: "https://li-connector2.com/ad/?afl=18ag1"
                         memo: null
-                        custom_settings:
-                          postback_url: "https://example.com/postback"
-                          param_1_name: "click_id"
-                          param_2_name: "sub_id"
-                          param_3_name: null
-                          friend_id_param_name: "line_friend_id"
                       - id: 546
                         advertisement_code: "62ch10"
                         conversion_code: "LCO1234568"
@@ -1525,7 +1519,6 @@ paths:
                         postback_setting: meta
                         friend_add_url: "https://li-connector2.com/ad/?afl=62ch10"
                         memo: null
-                        custom_settings: null
                     page: 1
                     limit: 100
                     total: 2
@@ -1572,8 +1565,8 @@ paths:
                     memo: null
                     custom_settings:
                       postback_url: "https://example.com/postback"
-                      param_1_name: "click_id"
-                      param_2_name: "sub_id"
+                      param_1_name: "param_1"
+                      param_2_name: "param_2"
                       param_3_name: null
                       friend_id_param_name: "line_friend_id"
         "400":
@@ -1587,6 +1580,66 @@ paths:
       security:
         - bearerAuth: []
   /advertisement-codes/{advertisement_code_id}:
+    get:
+      tags:
+        - AdvertisementCodes
+      operationId: getAdvertisementCode
+      summary: 広告コード詳細
+      description: 広告コードを1件取得する（編集画面向け）。
+      parameters:
+        - name: advertisement_code_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: 広告コードID
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdvertisementCodeItem"
+              examples:
+                detail:
+                  summary: 詳細の例
+                  value:
+                    id: 545
+                    advertisement_code: "18ag1"
+                    conversion_code: "LCO1234567"
+                    name: "ああああ"
+                    postback_setting: custom
+                    friend_add_url: "https://li-connector2.com/ad/?afl=18ag1"
+                    memo: null
+                    custom_settings:
+                      postback_url: "https://example.com/postback"
+                      param_1_name: "param_1"
+                      param_2_name: "param_2"
+                      param_3_name: null
+                      friend_id_param_name: "line_friend_id"
+                detail_non_custom:
+                  summary: 詳細の例（non-custom）
+                  description: postback_setting=meta の場合の例。custom_settings は null もしくは未返却（要確認）
+                  value:
+                    id: 546
+                    advertisement_code: "62ch10"
+                    conversion_code: "LCO1234568"
+                    name: "うぅぅぅ"
+                    postback_setting: meta
+                    friend_add_url: "https://li-connector2.com/ad/?afl=62ch10"
+                    memo: null
+                    custom_settings: null
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      security:
+        - bearerAuth: []
     put:
       tags:
         - AdvertisementCodes
@@ -1628,9 +1681,9 @@ paths:
                     memo: "メモ更新"
                     custom_settings:
                       postback_url: "https://example.com/postback"
-                      param_1_name: "click_id"
-                      param_2_name: "sub_id"
-                      param_3_name: "param3"
+                      param_1_name: "param_1"
+                      param_2_name: "param_2"
+                      param_3_name: "param_3"
                       friend_id_param_name: "line_friend_id"
         "400":
           $ref: "#/components/responses/ValidationError"
@@ -3043,18 +3096,23 @@ components:
         custom時の設定。置換タグ {+afn+}, {+afn2+}, {+line_friend_id+} を利用（要確認）
         - LPROの {+member_id+} は非対応で {+line_friend_id+} を使用（要確認）
         - additionalProperties: true の扱い（未知キー許容/無視/エラー）要確認
+        - param_1_name〜param_3_name は任意（未指定可）
       properties:
         postback_url:
           type: string
           format: uri
         param_1_name:
           type: string
+          description: 任意のパラメータ名（1）
         param_2_name:
           type: string
+          description: 任意のパラメータ名（2）
         param_3_name:
           type: string
+          description: 任意のパラメータ名（3）
         friend_id_param_name:
           type: string
+          description: 友だち管理IDのパラメータ名
       additionalProperties: true
 
     AdvertisementCodeCreateRequest:
@@ -3101,7 +3159,47 @@ components:
             items:
               type: array
               items:
-                $ref: "#/components/schemas/AdvertisementCodeItem"
+                $ref: "#/components/schemas/AdvertisementCodeListItem"
+
+    AdvertisementCodeListItem:
+      type: object
+      required:
+        - id
+        - advertisement_code
+        - conversion_code
+        - name
+        - postback_setting
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 545
+        advertisement_code:
+          type: string
+          maxLength: 30
+          example: "18ag1"
+        conversion_code:
+          type: string
+          minLength: 10
+          maxLength: 10
+          pattern: '^LCO\d{7}$'
+          description: LCO + 7桁の10文字コード
+          example: "LCO1234567"
+        name:
+          type: string
+          maxLength: 30
+          example: "ああああ"
+        postback_setting:
+          $ref: "#/components/schemas/PostbackSetting"
+        friend_add_url:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://li-connector2.com/ad/?afl=18ag1"
+        memo:
+          type: string
+          maxLength: 1000
+          nullable: true
 
     AdvertisementCodeItem:
       type: object
