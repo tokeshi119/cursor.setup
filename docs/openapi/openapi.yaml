@@ -3322,6 +3322,7 @@ components:
           $ref: "#/components/schemas/PostbackSetting"
         execution_url:
           type: string
+          format: uri
           example: "https://ads.example.com/track?af=18ag1&line_friend_id=545"
 
     ErrorResponse:
