@@ -84,7 +84,7 @@ Last updated: 2026-02-04
 - 友だち数/配信数/消化率など集計系の検索条件の可否
 
 #### 要相談（実装範囲）
-- 最小: management_ids / usage_statuses / basic_id
+- 最小: line_account_ids / usage_statuses / basic_id
 - 追加フィルタは段階導入（OpenAPI上は定義済み）
 
 #### クエリパラメータ
@@ -104,16 +104,16 @@ limit:
   maximum: 100
   description: 1ページあたりの件数
 
-management_ids:
+line_account_ids:
   type: array
   items: integer (int64)
   required: false
-  description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
+  description: LINE設定ID（line_official_accounts.id）の完全一致。複数指定は同名パラメータの繰り返し。
 
-exclude_management_ids:
+exclude_line_account_ids:
   type: boolean
   required: false
-  description: true の場合、management_ids を除外条件として扱う
+  description: true の場合、line_account_ids を除外条件として扱う
 
 usage_statuses:
   type: array

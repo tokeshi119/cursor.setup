@@ -227,7 +227,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/LimitParam"
-        - name: management_ids
+        - name: friend_ids
           in: query
           required: false
           style: form
@@ -237,13 +237,13 @@ paths:
             items:
               type: integer
               format: int64
-          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
-        - name: exclude_management_ids
+          description: 管理I管理ID＝友だちID（line_friends.id）の完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_friend_ids
           in: query
           required: false
           schema:
             type: boolean
-          description: true の場合、management_ids を除外条件として扱う
+          description: true の場合、friend_ids を除外条件として扱う
         - name: management_codes
           in: query
           required: false
@@ -414,7 +414,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/LimitParam"
-        - name: management_ids
+        - name: line_account_ids
           in: query
           required: false
           style: form
@@ -424,13 +424,13 @@ paths:
             items:
               type: integer
               format: int64
-          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
-        - name: exclude_management_ids
+          description: 管理ID＝LINE設定ID（line_official_accounts.id）の完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_line_account_ids
           in: query
           required: false
           schema:
             type: boolean
-          description: true の場合、management_ids を除外条件として扱う
+          description: true の場合、line_account_ids を除外条件として扱う
         - name: usage_statuses
           in: query
           required: false
@@ -1027,7 +1027,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/LimitParam"
-        - name: management_ids
+        - name: line_account_ids
           in: query
           required: false
           style: form
@@ -1037,13 +1037,13 @@ paths:
             items:
               type: integer
               format: int64
-          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
-        - name: exclude_management_ids
+          description: LINE設定ID（line_official_accounts.id）の完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_line_account_ids
           in: query
           required: false
           schema:
             type: boolean
-          description: true の場合、management_ids を除外条件として扱う
+          description: true の場合、line_account_ids を除外条件として扱う
         - name: usage_statuses
           in: query
           required: false
@@ -1458,7 +1458,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/PageParam"
         - $ref: "#/components/parameters/LimitParam"
-        - name: management_ids
+        - name: advertisement_code_ids
           in: query
           required: false
           style: form
@@ -1468,13 +1468,13 @@ paths:
             items:
               type: integer
               format: int64
-          description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
-        - name: exclude_management_ids
+          description: 広告コードID（advertisement_codes.id）の完全一致。複数指定は同名パラメータの繰り返し。
+        - name: exclude_advertisement_code_ids
           in: query
           required: false
           schema:
             type: boolean
-          description: true の場合、management_ids を除外条件として扱う
+          description: true の場合、advertisement_code_ids を除外条件として扱う
         - name: advertisement_codes
           in: query
           required: false

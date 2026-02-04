@@ -52,16 +52,16 @@ limit:
   maximum: 100
   description: 1ページあたりの件数
 
-management_ids:
+friend_ids:
   type: array
   items: integer (int64)
   required: false
-  description: 管理IDの完全一致。複数指定は同名パラメータの繰り返し。
+  description: 友だちID（line_friends.id）の完全一致。複数指定は同名パラメータの繰り返し。
 
-exclude_management_ids:
+exclude_friend_ids:
   type: boolean
   required: false
-  description: true の場合、management_ids を除外条件として扱う
+  description: true の場合、friend_ids を除外条件として扱う
 
 management_codes:
   type: array
