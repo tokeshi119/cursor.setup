@@ -3,7 +3,7 @@ info:
   title: LINE Connector 2 API
   version: 0.1.0
   description: フロントエンド主導でAPI設計したドラフトOpenAPI。API共通規約は docs/api/conventions.md を参照。
-  x-updated: 2026-02-03
+  x-updated: 2026-02-04
 
 tags:
   - name: Stats
@@ -1263,6 +1263,21 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/RichMenuUpdateRequest'
+            encoding:
+              actions:
+                contentType: application/json
+            examples:
+              update:
+                summary: 更新の例
+                value:
+                  status: enabled
+                  menu_bar_text: "メニュー"
+                  template_id: 3
+                  actions:
+                    - action_type: url
+                      url: "https://example.com"
+                    - action_type: none
+                      url: null
       responses:
         '200':
           description: 更新成功
@@ -2071,7 +2086,7 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/FriendStatus'
-      description: ブロック状態（true=blocked / false=normal）。複数指定可。
+      description: ブロック状態（line_friends.is_blocked / true=blocked / false=normal）。複数指定可。
 
   schemas:
     Pagination:
@@ -2093,7 +2108,7 @@ components:
 
     FriendStatus:
       type: boolean
-      description: ブロック状態（true=blocked / false=normal）
+      description: ブロック状態（line_friends.is_blocked / true=blocked / false=normal）
 
     AdminRole:
       type: string
@@ -2461,6 +2476,7 @@ components:
         channel_secret:
           type: string
           maxLength: 200
+          description: 平文を返すか要確認（バックエンドと相談）
           example: "ffff86b35fb8144ef1cebbeaa242cde8"
         line_guidance_status:
           $ref: '#/components/schemas/LineAccountLineGuidanceStatus'
@@ -2479,6 +2495,7 @@ components:
         access_token:
           type: string
           nullable: true
+          description: 平文を返すか要確認（バックエンドと相談）
           example: "xxxxx"
         redirect_url:
           type: string
@@ -2747,6 +2764,8 @@ components:
         url:
           type: string
           nullable: true
+          description: action_type=url のとき必須。action_type=none の場合は null または未指定。
+          format: uri
           maxLength: 1000
           example: "https://example.com"
 
@@ -2805,8 +2824,16 @@ components:
           minimum: 1
           maximum: 10
         actions:
-          type: string
-          description: JSON文字列（最大6枠, URL指定/使用しない）。template_id により必要な枠数が異なる（要確認）
+          type: array
+          description: アクション設定（URL指定/使用しない）。template_id により必要な枠数が異なる（要確認）。URLにシステム置換文字は使用できません。
+          maxItems: 6
+          items:
+            $ref: '#/components/schemas/RichMenuAction'
+          example:
+            - action_type: url
+              url: "https://example.com"
+            - action_type: none
+              url: null
 
     AutoResponseMessageSendStatus:
       type: string
