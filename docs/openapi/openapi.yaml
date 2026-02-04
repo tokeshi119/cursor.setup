@@ -305,7 +305,6 @@ paths:
               examples:
                 list:
                   summary: 一覧の例
-                  description: custom_settings は custom のときのみ。non-custom は null もしくは未返却（要確認）
                   value:
                     items:
                       - id: 545
@@ -1503,6 +1502,7 @@ paths:
               examples:
                 list:
                   summary: 一覧の例
+                  description: custom_settings は custom のときのみ。non-custom は null もしくは未返却（要確認）
                   value:
                     items:
                       - id: 545
