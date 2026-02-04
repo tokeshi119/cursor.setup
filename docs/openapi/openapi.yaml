@@ -10,6 +10,7 @@ info:
     - 認証: `Authorization: Bearer {token}`
     - 命名: JSONプロパティは `snake_case`
     - ページング: `page` / `limit`
+    - Swagger UI: OpenAPIをローカルで閲覧/疎通確認するために使用
     - エラーレスポンス: `#/components/schemas/ErrorResponse`
   x-updated: 2026-02-04
 
@@ -37,7 +38,13 @@ tags:
 
 servers:
   - url: https://li-connector2.com/api/v1
-    description: （仮）
+    description: 本番（仮）
+  - url: http://localhost:{port}/api/v1
+    description: ローカル開発（要確認）
+    variables:
+      port:
+        default: "3000"
+        description: ローカル起動ポート（要確認）
 
 paths:
   /stats/usage:
@@ -63,6 +70,9 @@ paths:
         - 0件埋めを行う（month=12件 / day=当月日数 / hour=24件）
         - label は granularity に応じて YYYY-MM / YYYY-MM-DD / HH(00-23)
         - range.from/to は集計範囲（JST、両端含む）
+
+        ## 要確認
+        - granularity により必須パラメータが変わる（条件付き必須）。クライアント生成で表現しづらい場合があるため、サーバー側で厳密にバリデーションし 400 を返す（必要なら粒度別API分割も検討）
       parameters:
         - name: granularity
           in: query
@@ -643,7 +653,10 @@ paths:
         - LineAccounts
       operationId: updateLineAccount
       summary: LINE設定更新
-      description: LINE設定を更新する（全項目）。
+      description: |
+        LINE設定を更新する（全項目）。
+        ※ 要確認: update は channel_secret を含むが、GET詳細では channel_secret/access_token はマスク返却想定。
+        ※ 要確認: 更新時の送信仕様（実値保持/別API/partial update など）をバックエンドレビューで確定する
       parameters:
         - name: line_account_id
           in: path
@@ -1985,7 +1998,10 @@ paths:
         - SystemSettings
       operationId: updateSystemSettings
       summary: システム設定更新
-      description: システム設定を更新する。キー類は未指定/空の場合は更新しない想定（要確認）。
+      description: |
+        システム設定を更新する。
+        ※ 要確認: キー類（line_access_key/cms_webhook_key/cms_api_key）は未指定/空の場合は更新しない想定。
+        ※ 要確認: 未指定/空文字/null の扱い（nullでクリア可否、空文字許容可否）をバックエンドレビューで確定する
       requestBody:
         required: true
         content:
@@ -2017,6 +2033,9 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+      description: |
+        Bearer Token 認証。
+        bearerFormat=JWT は暫定（要確認）。
       bearerFormat: JWT
 
   responses:
@@ -2095,7 +2114,9 @@ components:
                       issue: 形式不正
                   trace_id: "00000000-0000-0000-0000-000000000000"
     ConflictError:
-      description: リソース競合
+      description: |
+        リソース競合（409）。
+        ※ 要確認: どの操作で返すか（重複/整合性/楽観ロック等）をバックエンドレビューで確定する
       content:
         application/json:
           schema:
@@ -2187,7 +2208,7 @@ components:
         time_zone:
           type: string
           example: Asia/Tokyo
-          description: 固定値（JST）（仮）
+          description: 固定値（Asia/Tokyo）（仮、要確認: enum化可否）
         range:
           type: object
           required: [from, to]
@@ -2603,6 +2624,9 @@ components:
     LineAccountUpdateRequest:
       allOf:
         - $ref: "#/components/schemas/LineAccountCreateRequest"
+      description: |
+        ※ 要確認: 現状は LineAccountCreateRequest と同型（全項目更新）。
+        ※ 要確認: GET詳細は channel_secret/access_token をマスク返却想定のため、更新時の送信仕様（実値保持/別API/partial update など）を確定する
 
     LineAccountBulkActionRequest:
       type: object
@@ -3094,15 +3118,15 @@ components:
         line_access_key:
           type: string
           nullable: true
-          description: 未指定/空の場合は更新しない想定（要確認）
+          description: 未指定/空/null の場合は更新しない想定（要確認: nullでクリア可否、空文字許容可否）
         cms_webhook_key:
           type: string
           nullable: true
-          description: 未指定/空の場合は更新しない想定（要確認）
+          description: 未指定/空/null の場合は更新しない想定（要確認: nullでクリア可否、空文字許容可否）
         cms_api_key:
           type: string
           nullable: true
-          description: 未指定/空の場合は更新しない想定（要確認）
+          description: 未指定/空/null の場合は更新しない想定（要確認: nullでクリア可否、空文字許容可否）
         conversion_api_target_url:
           type: string
 
@@ -3119,7 +3143,7 @@ components:
       description: |
         custom時の設定。置換タグ {+afn+}, {+afn2+}, {+line_friend_id+} を利用（要確認）
         - LPROの {+member_id+} は非対応で {+line_friend_id+} を使用（要確認）
-        - additionalProperties: true の扱い（未知キー許容/無視/エラー）要確認
+        - additionalProperties: true の扱い（未知キー許容/無視/エラー）要確認（暫定は許容。最終はバックエンドレビューで確定）
         - param_1_name〜param_3_name は任意（未指定可）
         - 未指定の場合は未送信（nullではなく省略）想定（要確認）
         - postback_url と friend_id_param_name は必須（要確認）
@@ -3148,7 +3172,9 @@ components:
       oneOf:
         - $ref: "#/components/schemas/AdvertisementCodeCreateRequestCustom"
         - $ref: "#/components/schemas/AdvertisementCodeCreateRequestNonCustom"
-      description: 広告コード作成リクエスト（custom / non-custom で条件分岐）
+      description: |
+        広告コード作成リクエスト（custom / non-custom で条件分岐）
+        ※ 要確認: oneOf の判別は postback_setting を想定。クライアント生成の都合により discriminator 追加を検討
 
     AdvertisementCodeBaseRequest:
       type: object
@@ -3209,7 +3235,9 @@ components:
       oneOf:
         - $ref: "#/components/schemas/AdvertisementCodeCreateRequestCustom"
         - $ref: "#/components/schemas/AdvertisementCodeCreateRequestNonCustom"
-      description: 広告コード更新リクエスト（custom / non-custom で条件分岐）
+      description: |
+        広告コード更新リクエスト（custom / non-custom で条件分岐）
+        ※ 要確認: oneOf の判別は postback_setting を想定。クライアント生成の都合により discriminator 追加を検討
 
     AdvertisementCodeListResponse:
       allOf:

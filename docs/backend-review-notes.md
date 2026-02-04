@@ -14,6 +14,10 @@ Last updated: 2026-02-04
 
 ## 3. 画面/機能ごとの要確認
 
+### 3-0. 共通（Swagger/認証）
+- SwaggerUIローカル閲覧/疎通の servers（localhost + port など）の整理
+- Bearer認証の bearerFormat=JWT の扱い（暫定のまま/削除/確定）
+
 ### 3-1. 友だち一覧/検索
 - 管理コード（incode）の対応カラム
 - 複数指定パラメータの受け渡し方式（同名パラメータ繰り返しは暫定）
@@ -23,6 +27,8 @@ Last updated: 2026-02-04
 ### 3-2. 利用集計（月別/日別/時間別）
 - stats_monthly / stats_daily / stats_hourly の参照方針
 - 0件埋めの実装方針（12ヶ月/日数/24時間）
+- granularityごとの条件付き必須（year/month/date）と指定禁止パラメータのバリデーション方針（400）
+- time_zone の固定値（Asia/Tokyo）を型としてどう表現するか（enum化可否）
 
 ### 3-3. 広告コード一覧/検索/新規/編集
 - conversion_code 再生成ルール（広告コード更新時）
@@ -30,6 +36,8 @@ Last updated: 2026-02-04
 - ポストバック実行タイミング
 - 削除時の連鎖（advertisement_code_custom_settings / postback_history）
 - customパラメータ名の制約（許可文字/固定リスト）
+- custom/non-custom の条件分岐（oneOf）の判別方法と discriminator 追加要否（クライアント生成の都合）
+- custom_settings の additionalProperties: true の扱い（未知キー許容/無視/エラー）
 
 ### 3-4. ポストバック履歴
 - 広告コード/コンバージョンコードは部分一致でOKか
@@ -47,6 +55,7 @@ Last updated: 2026-02-04
 - BAN発生日の定義（BAN確定日か最終検知日か）
 - BAN検知時は使用状況を自動でinactiveへ遷移、inactiveは自動フェイルチェック対象外
 - access_token / channel_secret の表示・マスク方針
+- 全項目PUT + マスク返却の整合（更新時の送信仕様、上書き事故対策、secret更新専用APIの要否）
 - webhook更新/アクセストークン更新の同期/非同期方針
 - CSV取り込み時のバリデーションとエラー返却仕様
 
@@ -76,6 +85,7 @@ Last updated: 2026-02-04
 - 自動採番の対象（system_settings.id / site_code）
 - コンバージョンAPIアクセス先URLの置換文字（拡張タグ）
 - 連携キー類のマスク表示/更新時の扱い
+- キー類の未指定/空文字/null の扱い（更新しない/クリア可能/空文字許容）
 
 ## 4. 今後追加予定の画面
 - 追加予定（約3画面）
